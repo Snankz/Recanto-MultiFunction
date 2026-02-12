@@ -2,31 +2,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const listContainer = document.getElementById('products-list');
     const saveBtn = document.getElementById('save-db-btn');
 
-    if (!window.productsData || !Array.isArray(window.productsData)) {
-        console.error("Erro CRÍTICO: window.productsData não encontrado ou inválido.", window.productsData);
+    let products = [];
+
+    async function init() {
+        if (window.fetchProducts) {
+            products = await window.fetchProducts();
+        } else {
+            console.error("fetchProducts function not found.");
+            showError("Erro: Cliente Supabase não encontrado.");
+            return;
+        }
+
+        if (!products || products.length === 0) {
+            showEmpty();
+            return;
+        }
+
+        // Attach to window for potential debugging or save logic reuse if needed
+        window.productsData = products;
+        renderProducts();
+    }
+
+    init();
+
+    function showError(msg) {
         listContainer.innerHTML = `
             <div style="text-align: center; padding: 2rem; color: #dc3545;">
                 <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; margin-bottom: 1rem;"></i>
                 <h2>Erro ao carregar banco de dados</h2>
-                <p>O arquivo products.js não foi carregado corretamente ou está vazio.</p>
-                <p>Verifique o console (F12) para mais detalhes.</p>
+                <p>${msg}</p>
             </div>
         `;
-        return;
     }
 
-    if (window.productsData.length === 0) {
+    function showEmpty() {
         listContainer.innerHTML = `
             <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
                 <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
                 <h2>Nenhum produto encontrado</h2>
-                <p>A lista de produtos está vazia.</p>
+                <p>A lista de produtos está vazia no Supabase.</p>
             </div>
         `;
-        return;
     }
-
-    let products = window.productsData;
 
     function renderProducts() {
         listContainer.innerHTML = '';
@@ -135,33 +152,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderProducts();
 
-    // Save Logic
-    saveBtn.addEventListener('click', () => {
-        // 1. Sort Data
-        products.sort((a, b) => {
-            if (a.brand < b.brand) return -1;
-            if (a.brand > b.brand) return 1;
-            if (a.name < b.name) return -1;
-            if (a.name > b.name) return 1;
-            return 0;
-        });
+    // Save Logic - Upload to Supabase
+    saveBtn.addEventListener('click', async () => {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
 
-        // 2. Format JS File Content
-        const fileContent = generateJSContent(products);
+        try {
+            if (!window.supabaseClient) {
+                throw new Error("Cliente Supabase não inicializado.");
+            }
 
-        // 3. Trigger Download
-        const blob = new Blob([fileContent], { type: 'text/javascript' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'products.js';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+            // Upsert all products
+            // Note: For large datasets, batching might be needed, but for 60 items it's fine.
+            const { data, error } = await window.supabaseClient
+                .from('products')
+                .upsert(products, { onConflict: 'id' });
 
-        alert("Arquivo products.js baixado! Substitua o arquivo original na pasta do projeto.");
+            if (error) throw error;
+
+            alert("Banco de dados atualizado com sucesso!");
+        } catch (err) {
+            console.error("Erro ao salvar:", err);
+            alert("Erro ao salvar no banco de dados: " + (err.message || err));
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Salvar Alterações (Supabase)';
+        }
     });
+
+    // Deprecated file download logic removed
 
     function generateJSContent(data) {
         // Identical formatter to the node script used before

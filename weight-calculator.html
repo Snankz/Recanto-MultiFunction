@@ -124,9 +124,25 @@
         </main>
     </div>
 
-    <footer class="main-footer"></footer>
+    <footer class="main-footer">
+        <button class="footer-db-btn" onclick="checkDbAccess()">
+            <i class="fa-solid fa-database"></i> Banco de Dados
+        </button>
+    </footer>
 
-    <script src="products.js"></script>
+    <script>
+        function checkDbAccess() {
+            const pass = prompt('Digite a senha de acesso:');
+            if (pass === '1313') {
+                window.location.href = 'database.html';
+            } else if (pass !== null) {
+                alert('Senha incorreta!');
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
     <script src="weight-script.js"></script>
 </body>
 

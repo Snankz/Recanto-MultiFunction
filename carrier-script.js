@@ -226,4 +226,84 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
         });
     });
+    // --- CARRIER DATABASE LOGIC ---
+
+    const carriers = [
+        { name: "Mandala Transportes", cnpj: "26.470.807/0002-62", coverage: "SP, MG, DF, GO, MT, MS, TO", phone: "(11) 2413-4577", ufs: ["SP", "MG", "DF", "GO", "MT", "MS", "TO"] },
+        { name: "Frilog", cnpj: "01.489.122/0001-56", coverage: "SP, RJ, ES, SC", phone: "(11) 98292-0109", ufs: ["SP", "RJ", "ES", "SC"] },
+        { name: "Caiapó Cargas", cnpj: "05.543.757/0001-45", coverage: "SP, MG, GO, DF", phone: "(11) 99496-5149", ufs: ["SP", "MG", "GO", "DF"] },
+        { name: "Transpen Cargas", cnpj: "78.706.751/0001-14", coverage: "SP, PR, MG (Foco em SP)", phone: "(15) 99713-2740", ufs: ["SP", "PR", "MG"] },
+        { name: "Risso", cnpj: "52.661.634/0001-99", coverage: "SP, PR, SC, RS, MG, MS, RJ, ES, GO, DF", phone: "(11) 3648-4444", ufs: ["SP", "PR", "SC", "RS", "MG", "MS", "RJ", "ES", "GO", "DF"] },
+        { name: "Zargo Transportes", cnpj: "54.635.420/0001-73", coverage: "Atendimento Nacional (Foco em SP)", phone: "(11) 2967-4324 / (35) 98705-4329", ufs: ["ALL"] },
+        { name: "Ostel", cnpj: "04.560.557/0001-38", coverage: "SP, RJ, MG, PR, SC, RS", phone: "(11) 91741-7468", ufs: ["SP", "RJ", "MG", "PR", "SC", "RS"] },
+        { name: "Alfa Transportes", cnpj: "82.110.818/0001-21", coverage: "RS, SC, PR, SP, MG, ES, RJ, GO, DF, MS, MT", phone: "(49) 3561-5100", ufs: ["RS", "SC", "PR", "SP", "MG", "ES", "RJ", "GO", "DF", "MS", "MT"] },
+        { name: "THL Transportes", cnpj: "26.514.086/0001-64", coverage: "SP, PR (Carga Fracionada) / Nacional (Lotação)", phone: "(11) 98156-1479", ufs: ["ALL"] }
+    ];
+
+    const ufFilter = document.getElementById('uf-filter');
+    const carriersList = document.getElementById('carriers-list');
+
+    // Populate UF Filter
+    const allUfs = new Set();
+    carriers.forEach(c => {
+        if (c.ufs.includes("ALL")) return;
+        c.ufs.forEach(uf => allUfs.add(uf.trim()));
+    });
+    const sortedUfs = Array.from(allUfs).sort();
+
+    sortedUfs.forEach(uf => {
+        const option = document.createElement('option');
+        option.value = uf;
+        option.textContent = uf;
+        ufFilter.appendChild(option);
+    });
+
+    function renderCarriers(filterUf = "") {
+        carriersList.innerHTML = "";
+
+        const filtered = carriers.filter(c => {
+            if (!filterUf) return true; // Show all if no filter
+            if (c.ufs.includes("ALL")) return true; // Always show national
+            return c.ufs.includes(filterUf);
+        });
+
+        if (filtered.length === 0) {
+            carriersList.innerHTML = `<p class="no-result" style="grid-column: 1/-1; text-align: center; padding: 2rem;">Nenhuma transportadora encontrada para este estado.</p>`;
+            return;
+        }
+
+        filtered.forEach(c => {
+            const card = document.createElement('div');
+            card.className = 'carrier-card';
+
+            card.innerHTML = `
+                <div class="carrier-name">
+                    ${c.name}
+                    <i class="fa-solid fa-truck-moving" style="color: var(--secondary-color); opacity: 0.5;"></i>
+                </div>
+                <span class="carrier-cnpj">CNPJ: ${c.cnpj}</span>
+                <div class="carrier-coverage">
+                    <strong>Área de Atuação:</strong>
+                    ${c.coverage}
+                </div>
+                <div class="carrier-contact">
+                    <label>Telefone / Contato</label>
+                    <div style="font-weight: 600; font-size: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-brands fa-whatsapp" style="color: #25D366;"></i>
+                        ${c.phone}
+                    </div>
+                </div>
+            `;
+            carriersList.appendChild(card);
+        });
+    }
+
+    // Initial Render
+    renderCarriers();
+
+    // Filter Event
+    ufFilter.addEventListener('change', (e) => {
+        renderCarriers(e.target.value);
+    });
+
 });

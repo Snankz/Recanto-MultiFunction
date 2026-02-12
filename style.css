@@ -379,6 +379,26 @@ input:focus {
     border-radius: var(--radius-md);
 }
 
+/* --- Footer Database Button --- */
+.footer-db-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-weight: 600;
+    transition: background 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.footer-db-btn:hover {
+    background: var(--secondary-color);
+}
+
 .style-remove-btn {
     background: #ffe3e3;
     color: #cc0000;
@@ -406,6 +426,7 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 /* --- Grid Layouts for Tax Calculator (Bonus Module) --- */
@@ -601,4 +622,124 @@ input[type=number] {
 
 .no-result:hover {
     background: white;
+}
+
+/* --- Carrier Database Section --- */
+.carrier-database-section {
+    width: 100%;
+    max-width: 1000px;
+    margin: 2rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border-color);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-header h2 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.filter-container {
+    max-width: 400px;
+    margin: 0 auto 2rem;
+    text-align: center;
+}
+
+.filter-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.carriers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.carrier-card {
+    background: #f8f9fa;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.carrier-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-color: var(--secondary-color);
+}
+
+.carrier-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.5rem;
+}
+
+.carrier-cnpj {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-family: monospace;
+    margin-bottom: 1rem;
+    display: block;
+    background: #e9ecef;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    width: fit-content;
+    margin-top: 0.5rem;
+}
+
+.carrier-coverage {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    color: var(--text-main);
+}
+
+.carrier-coverage strong {
+    color: var(--secondary-color);
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+}
+
+.carrier-contact {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--border-color);
+}
+
+.carrier-contact label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.carrier-contact input {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    background: #fff;
+    width: 100%;
+    border-radius: var(--radius-md);
 }

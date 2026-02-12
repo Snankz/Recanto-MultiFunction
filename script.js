@@ -27,13 +27,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentProduct = null;
     let allProducts = [];
 
-    // Check if products data exists
-    if (window.productsData) {
-        allProducts = window.productsData;
-    } else {
-        console.error("Products data not loaded!");
-        return;
+    // Fetch products from Supabase
+    async function loadProducts() {
+        try {
+            if (window.fetchProducts) {
+                allProducts = await window.fetchProducts();
+            } else {
+                console.error("fetchProducts function not found.");
+            }
+        } catch (error) {
+            console.error("Failed to load products:", error);
+        }
     }
+
+    // Initial Load
+    loadProducts();
 
     // --- Search Logic ---
     searchInput.addEventListener('input', (e) => {

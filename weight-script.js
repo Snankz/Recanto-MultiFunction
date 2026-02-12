@@ -21,15 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let allProducts = [];
 
     // Get unique products
-    if (window.productsData && Array.isArray(window.productsData)) {
-        allProducts = window.productsData;
-    } else {
-        console.error("Products data not loaded!");
-        // Optional: Disable search or show error
-        searchInput.disabled = true;
-        searchInput.placeholder = "Erro ao carregar produtos";
-        return;
+    async function loadProducts() {
+        if (window.fetchProducts) {
+            allProducts = await window.fetchProducts();
+        } else {
+            console.error("fetchProducts function not found!");
+            searchInput.disabled = true;
+            searchInput.placeholder = "Erro ao carregar produtos";
+        }
     }
+    loadProducts();
 
     // --- Search Logic ---
     searchInput.addEventListener('input', (e) => {

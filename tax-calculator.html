@@ -105,7 +105,22 @@
         </main>
     </div>
 
-    <footer class="main-footer"></footer>
+    <footer class="main-footer">
+        <button class="footer-db-btn" onclick="checkDbAccess()">
+            <i class="fa-solid fa-database"></i> Banco de Dados
+        </button>
+    </footer>
+
+    <script>
+        function checkDbAccess() {
+            const pass = prompt('Digite a senha de acesso:');
+            if (pass === '1313') {
+                window.location.href = 'database.html';
+            } else if (pass !== null) {
+                alert('Senha incorreta!');
+            }
+        }
+    </script>
     <script src="tax-script.js"></script>
 </body>
 

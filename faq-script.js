@@ -16,11 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let allProducts = [];
 
     // Initialize logic once products are loaded
-    if (window.productsData) {
-        allProducts = window.productsData;
-    } else {
-        console.error("Products data not found!");
+    async function loadProducts() {
+        if (window.fetchProducts) {
+            allProducts = await window.fetchProducts();
+        } else {
+            console.error("fetchProducts function not found!");
+        }
     }
+    loadProducts();
 
     // --- Search Logic ---
     searchInput.addEventListener('input', (e) => {

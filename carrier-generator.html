@@ -165,9 +165,46 @@
                 </div>
             </section>
         </main>
+
+        <!-- New Carrier Database Section -->
+        <section class="carrier-database-section">
+            <header class="section-header">
+                <h2><i class="fa-solid fa-truck-fast"></i> Banco de Dados de Transportadoras</h2>
+                <p>Encontre a melhor opção de frete para seu estado</p>
+            </header>
+
+            <div class="filter-container">
+                <label for="uf-filter">Filtrar por Estado (UF):</label>
+                <select id="uf-filter" class="gen-input">
+                    <option value="">Todos os Estados</option>
+                    <!-- Options populated by JS -->
+                </select>
+            </div>
+
+            <div class="carriers-list-container">
+                <div id="carriers-list" class="carriers-grid">
+                    <!-- Cards populated by JS -->
+                </div>
+            </div>
+        </section>
     </div>
 
-    <footer class="main-footer"></footer>
+    <footer class="main-footer">
+        <button class="footer-db-btn" onclick="checkDbAccess()">
+            <i class="fa-solid fa-database"></i> Banco de Dados
+        </button>
+    </footer>
+
+    <script>
+        function checkDbAccess() {
+            const pass = prompt('Digite a senha de acesso:');
+            if (pass === '1313') {
+                window.location.href = 'database.html';
+            } else if (pass !== null) {
+                alert('Senha incorreta!');
+            }
+        }
+    </script>
 
     <script src="carrier-script.js"></script>
 </body>
