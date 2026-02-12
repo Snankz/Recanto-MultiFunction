@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Produtos - Loja das Resinas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-decor"></div>
+
+    <header class="main-header">
+        <nav class="nav-container">
+            <button class="nav-btn" onclick="window.location.href='index.html'">Calculadora Rendimento</button>
+            <button class="nav-btn" onclick="window.location.href='tacos-calculator.html'">Calculadora Tacos</button>
+            <button class="nav-btn" onclick="window.location.href='box-calculator.html'">Calculadora Caixas</button>
+            <button class="nav-btn" onclick="window.location.href='weight-calculator.html'">Calculadora Peso</button>
+            <button class="nav-btn" onclick="window.location.href='carrier-generator.html'">Gerador de
+                transportadora</button>
+            <button class="nav-btn active-nav" onclick="window.location.href='faq.html'">Catálogo / FAQ</button>
+            <button class="nav-btn" onclick="window.location.href='tax-calculator.html'">Calculadora Impostos</button>
+        </nav>
+    </header>
+
+    <div class="main-wrapper" style="max-width: 1200px;">
+        <main class="content-grid" style="grid-template-columns: 1fr; gap: 2rem;">
+
+            <!-- Search Section -->
+            <section class="search-section"
+                style="background: white; padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft);">
+                <div class="input-group" style="position: relative; max-width: 600px; margin: 0 auto;">
+                    <label for="product-search" style="text-align: center; font-size: 1.2rem; margin-bottom: 1rem;">
+                        <i class="fa-solid fa-magnifying-glass"></i> Buscar Produto
+                    </label>
+                    <input type="text" id="product-search" placeholder="Digite o nome do produto..." autocomplete="off"
+                        style="padding: 1rem 1.5rem; font-size: 1.1rem; border-radius: 30px;">
+                    <button id="clear-search"
+                        style="display: none; position: absolute; right: 15px; top: 52px; background: none; border: none; color: #999; cursor: pointer;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <!-- Search Results Dropdown -->
+                    <div id="search-results" class="search-dropdown hidden"></div>
+                </div>
+            </section>
+
+            <!-- Product Details Section (Hidden by default) -->
+            <section id="product-details" class="product-details hidden animate-slide-up"
+                style="background: white; padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft);">
+                <div class="details-grid">
+                    <!-- Image -->
+                    <div class="detail-image-container">
+                        <img id="detail-image" src="" alt="Produto" class="product-image">
+                    </div>
+
+                    <!-- Info -->
+                    <div class="detail-info-container">
+                        <h2 id="detail-name"
+                            style="color: var(--primary-color); font-size: 2rem; margin-bottom: 0.5rem;">Nome do Produto
+                        </h2>
+                        <h4 id="detail-brand" style="color: var(--secondary-color); margin-bottom: 1.5rem;">Marca</h4>
+
+                        <div class="info-specs-grid" id="info-grid">
+                            <!-- Dynamic Key-Value Pairs injected here -->
+                        </div>
+
+                        <div style="margin-top: 2rem; text-align: center;">
+                            <a id="detail-bulletin" href="#" target="_blank" class="action-btn"
+                                style="margin-right: 15px; padding: 0.8rem 2rem; text-decoration: none; border-radius: var(--radius-md); display: inline-block; background-color: var(--secondary-color);">
+                                <i class="fa-solid fa-file-lines"></i> Boletim Técnico
+                            </a>
+                            <a id="detail-fisqp" href="#" target="_blank" class="action-btn"
+                                style="padding: 0.8rem 2rem; text-decoration: none; border-radius: var(--radius-md); display: inline-block;">
+                                <i class="fa-solid fa-file-pdf"></i> Ver FISQP
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Initial Placeholder -->
+            <div id="initial-placeholder" class="placeholder-message" style="padding: 4rem;">
+                <i class="fa-solid fa-database"></i>
+                <p>Pesquise um produto para visualizar suas especificações técnicas.</p>
+            </div>
+
+        </main>
+    </div>
+
+    <footer class="main-footer" style="background: #e9ecef; padding: 2rem; text-align: center;">
+        <button onclick="window.location.href='database.html'"
+            style="background: var(--primary-color); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+            <i class="fa-solid fa-database"></i> Banco de Dados
+        </button>
+    </footer>
+    <script src="products.js"></script>
+    <script src="faq-script.js"></script>
+</body>
+
+</html>

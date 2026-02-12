@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Caixas - Loja das Resinas</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="background-decor"></div>
+
+    <header class="main-header">
+        <nav class="nav-container">
+            <button class="nav-btn" onclick="window.location.href='index.html'">Calculadora Rendimento</button>
+            <button class="nav-btn" onclick="window.location.href='tacos-calculator.html'">Calculadora Tacos</button>
+            <button class="nav-btn" onclick="window.location.href='box-calculator.html'">Calculadora Caixas</button>
+            <button class="nav-btn" onclick="window.location.href='weight-calculator.html'">Calculadora Peso</button>
+            <button class="nav-btn">Gerador de transportadora</button>
+            <button class="nav-btn" onclick="window.location.href='faq.html'">Catálogo / FAQ</button>
+            <button class="nav-btn" onclick="window.location.href='tax-calculator.html'">Calculadora Impostos</button>
+        </nav>
+    </header>
+
+    <div class="main-wrapper">
+        <main class="content-grid">
+            <!-- Left Column: Results -->
+            <section class="calculator-column" style="background: white; border-right: 1px solid var(--border-color);">
+                <header class="header">
+                    <h1>Resultados</h1>
+                    <p>Volume e Peso total</p>
+                </header>
+
+                <div class="result-display-container"
+                    style="display: flex; flex-direction: column; justify-content: center; height: 100%; align-items: center; text-align: center; gap: 2rem;">
+
+                    <!-- Volume Result -->
+                    <div class="result-value-container" style="color: var(--primary-color);">
+                        <i class="fa-solid fa-cubes"
+                            style="font-size: 3rem; margin-bottom: 1rem; color: var(--secondary-color);"></i>
+                        <h2 id="total-volume" style="font-size: 4rem; font-weight: 700;">0.000</h2>
+                        <span class="unit" style="font-size: 1.5rem; color: var(--text-muted);">M³</span>
+                    </div>
+
+                    <!-- Weight Result -->
+                    <div class="result-value-container" style="color: var(--primary-color);">
+                        <i class="fa-solid fa-weight-hanging"
+                            style="font-size: 3rem; margin-bottom: 1rem; color: var(--secondary-color);"></i>
+                        <h2 id="total-weight" style="font-size: 4rem; font-weight: 700;">0</h2>
+                        <span class="unit" style="font-size: 1.5rem; color: var(--text-muted);">g</span>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Right Column: Input Inputs -->
+            <section class="calculator-column">
+                <header class="header">
+                    <h1>Adicionar Caixas</h1>
+                    <p>Informe as medidas e quantidade</p>
+                </header>
+
+                <div class="input-section">
+
+                    <div id="boxes-container">
+                        <!-- Dynamic box inputs will go here -->
+                    </div>
+
+                    <button id="add-box-btn" class="action-btn"
+                        style="width: 100%; padding: 1rem; background: var(--secondary-color); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background 0.3s;">
+                        <i class="fa-solid fa-plus"></i> Adicionar Nova Caixa
+                    </button>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="main-footer"></footer>
+
+    <script src="box-script.js"></script>
+</body>
+
+</html>

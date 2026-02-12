@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Impostos - Loja das Resinas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-decor"></div>
+
+    <header class="main-header">
+        <nav class="nav-container">
+            <button class="nav-btn" onclick="window.location.href='index.html'">Calculadora Rendimento</button>
+            <button class="nav-btn" onclick="window.location.href='tacos-calculator.html'">Calculadora Tacos</button>
+            <button class="nav-btn" onclick="window.location.href='box-calculator.html'">Calculadora Caixas</button>
+            <button class="nav-btn" onclick="window.location.href='weight-calculator.html'">Calculadora Peso</button>
+            <button class="nav-btn" onclick="window.location.href='carrier-generator.html'">Gerador de
+                transportadora</button>
+            <button class="nav-btn" onclick="window.location.href='faq.html'">Catálogo / FAQ</button>
+            <button class="nav-btn active-nav" onclick="window.location.href='tax-calculator.html'">Calculadora
+                Impostos</button>
+        </nav>
+    </header>
+
+    <div class="main-wrapper" style="max-width: 1200px;">
+        <main class="content-grid" style="grid-template-columns: 1fr;">
+
+            <!-- Top Section: Global Config -->
+            <section class="tax-header-section"
+                style="padding: 2rem; background: white; border-bottom: 1px solid var(--border-color);">
+                <div class="tax-config-grid"
+                    style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; align-items: center;">
+                    <div class="input-group">
+                        <label for="note-total"><i class="fa-solid fa-file-invoice-dollar"></i> Valor Total da Nota
+                            (R$)</label>
+                        <input type="text" id="note-total" placeholder="0,00" inputmode="numeric">
+                    </div>
+                    <div class="input-group">
+                        <label for="products-total"><i class="fa-solid fa-basket-shopping"></i> Valor Total Produtos
+                            (R$)</label>
+                        <input type="text" id="products-total" placeholder="0,00" inputmode="numeric">
+                    </div>
+
+                </div>
+
+                <div class="global-rate-display"
+                    style="margin-top: 1.5rem; text-align: center; padding-top: 1rem; border-top: 1px dashed var(--border-color);">
+                    <label style="display: block; color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">Taxa
+                        Global Calculada</label>
+                    <div style="font-size: 2.5rem; font-weight: 700; color: var(--secondary-color);">
+                        <span id="global-rate">0.00</span>%
+                    </div>
+                    <small style="color: var(--text-muted);">((Nota - Produtos) / Produtos) * 100</small>
+                </div>
+            </section>
+
+            <!-- Middle Section: Items List -->
+            <section class="tax-items-section" style="padding: 2rem; background: #fafafa;">
+                <div class="section-header"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>Itens da Nota</h3>
+                    <button id="add-item-btn" class="action-btn"
+                        style="background: var(--secondary-color); color: white; border: none; padding: 0.5rem 1rem; border-radius: var(--radius-md); cursor: pointer;">
+                        <i class="fa-solid fa-plus"></i> Novo Item
+                    </button>
+                </div>
+
+                <div id="items-header-row" class="items-header"
+                    style="padding: 0.5rem 1rem; font-weight: 600; color: var(--text-main); border-bottom: 2px solid var(--border-color);">
+                    <!-- Header columns injected by JS based on mode -->
+                </div>
+
+                <div id="items-list" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+                    <!-- Dynamic items will go here -->
+                </div>
+            </section>
+
+            <!-- Bottom Section: Summary -->
+            <section class="tax-summary-section"
+                style="padding: 2rem; background: var(--primary-color); color: white; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; text-align: center;">
+                <div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Soma Total Líquida</div>
+                    <div style="font-size: 1.8rem; font-weight: 700;">R$ <span id="total-net">0.00</span></div>
+                    <small style="opacity: 0.6;">(Sem impostos)</small>
+                </div>
+                <div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Soma Total Bruta</div>
+                    <div style="font-size: 2.2rem; font-weight: 700; color: var(--accent-color);">R$ <span
+                            id="total-gross">0.00</span></div>
+                    <small style="opacity: 0.6;">(Com impostos)</small>
+                </div>
+                <div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Diferença (Nota - Lista)</div>
+                    <div style="font-size: 1.8rem; font-weight: 700;">R$ <span id="diff-val">0.00</span></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="main-footer"></footer>
+    <script src="tax-script.js"></script>
+</body>
+
+</html>

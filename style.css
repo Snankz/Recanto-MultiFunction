@@ -1,0 +1,604 @@
+:root {
+    /* Construction/Industry Theme Colors */
+    --primary-color: #1B365D;
+    /* Dark Petrol Blue - Headers/Focus */
+    --secondary-color: #F58220;
+    /* Industrial Orange - Alerts/Buttons */
+    --accent-color: #F58220;
+    /* Industrial Orange */
+    --text-main: #343A40;
+    /* Lead Gray */
+    --text-muted: #6c757d;
+    --bg-color: #F8F9FA;
+    /* Ice White */
+    --card-bg: #ffffff;
+    --border-color: #ced4da;
+    /* Light Gray for differentiation */
+
+    --radius-lg: 8px;
+    --radius-md: 4px;
+    /* Keeping buttons slightly squarer or match 8px? User said "Cantos levemente arredondados (8px)". Let's use 8px generally. */
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
+    /* Flatter shadow */
+    --font-main: 'Outfit', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* --- Global Header --- */
+.main-header {
+    width: 100%;
+    height: 200px;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.nav-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 2rem;
+}
+
+.nav-btn {
+    height: 100px;
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Transparent white on blue */
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.nav-btn:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.nav-btn.active-nav {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* --- Global Footer --- */
+.main-footer {
+    width: 100%;
+    height: 100px;
+    /* Empty footer as per previous req, maybe keep transparent or matching bg */
+    background-color: #e9ecef;
+    margin-top: auto;
+}
+
+.background-decor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* Clean industrial gradient */
+    background: linear-gradient(to bottom, #F8F9FA, #e9ecef);
+    opacity: 1;
+}
+
+.main-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    margin: 2rem;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    min-height: 600px;
+    border: 1px solid var(--border-color);
+    /* Added border definition */
+}
+
+/* --- Left Column: Image --- */
+.image-column {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    border-right: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.product-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-image {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+}
+
+@keyframes slideUpBounce {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    60% {
+        transform: translateY(-20px);
+        opacity: 1;
+    }
+
+    80% {
+        transform: translateY(10px);
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.animate-slide-up {
+    animation: slideUpBounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.placeholder-message {
+    text-align: center;
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.placeholder-message i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Right Column: Calculator --- */
+.calculator-column {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    text-align: left;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header h1 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.header p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+}
+
+.input-group label i {
+    color: var(--secondary-color);
+    margin-right: 0.5rem;
+}
+
+select,
+input {
+    width: 100%;
+    padding: 1rem;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+
+select:focus,
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(27, 54, 93, 0.25);
+    /* Blue glow */
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.arrow-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-muted);
+}
+
+/* Yield Display */
+.yield-display {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    background: #e9ecef;
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Result Card */
+.result-card {
+    margin-top: auto;
+    background: var(--primary-color);
+    color: white;
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.result-card.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.result-value-container h2 {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.result-note {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+    }
+
+    .image-column {
+        padding: 1rem;
+        min-height: 250px;
+    }
+
+    .product-image {
+        max-height: 200px;
+    }
+
+    .calculator-column {
+        padding: 2rem;
+    }
+}
+
+/* --- Box Calculator specific logic --- */
+.style-box-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    margin-bottom: 0.5rem;
+}
+
+.box-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.box-name {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.small-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.box-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.style-qty-input {
+    width: 60px;
+    padding: 0.25rem;
+    text-align: center;
+    border-radius: var(--radius-md);
+}
+
+.style-remove-btn {
+    background: #ffe3e3;
+    color: #cc0000;
+    border: none;
+    border-radius: var(--radius-md);
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.style-remove-btn:hover {
+    background: #ffc9c9;
+}
+
+/* Remove arrows/spinners from number inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* --- Grid Layouts for Tax Calculator (Bonus Module) --- */
+.grid-per-item {
+    display: grid;
+    /* Qtd | Name | Value | Op | Bonus Ctrl | Final | Remove */
+    grid-template-columns: 0.7fr 2.5fr 1.2fr 0.5fr 1.6fr 1.2fr 0.5fr;
+    gap: 0.5rem;
+}
+
+.bonus-btn {
+    background: #e9ecef;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+
+.bonus-btn:hover {
+    background: #dee2e6;
+}
+
+.bonus-btn.active {
+    background: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+
+.bonus-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bonus-input {
+    width: 70px !important;
+    padding: 0.25rem !important;
+    font-size: 0.9rem !important;
+    border-color: var(--secondary-color) !important;
+    background: #fff5eb !important;
+    /* Light orange tint */
+}
+
+/* Toggle Operation Button (+/-) specific */
+.toggle-op-btn i {
+    font-size: 0.9rem;
+}
+
+/* Specific styling handled by JS but defaults here */
+.action-btn {
+    background: var(--secondary-color);
+    color: white;
+    transition: background 0.3s;
+}
+
+.action-btn:hover {
+    background: #d9731c;
+    /* Darker orange */
+}
+
+/* Cards gradients */
+.tax-summary-section>div {
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+}
+
+.tax-summary-section {
+    background: transparent !important;
+    /* Override inline */
+    gap: 1rem !important;
+}
+
+/* We need to override the specific gradient backgrounds in CSS since HTML might have inline or classes */
+/* But detailed implementation of gradient cards might need HTML class updates. 
+   For now, I'll rely on global defaults and assume HTML structure consumes these variables. 
+   Actually, the user requirement said "Footer: Manter o fundo laranja nos cards... mas aplicar um gradiente".
+/* --- FAQ / Catalog Page Styles --- */
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    /* Below input */
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100;
+    margin-top: 0.5rem;
+}
+
+.search-item {
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
+
+.search-item:hover {
+    background: #f0f7ff;
+}
+
+.search-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 4px;
+    background: #fff;
+    border: 1px solid #eee;
+}
+
+.search-name {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.search-brand {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Product Details */
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.detail-image-container {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.spec-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.spec-val {
+    font-size: 1rem;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.no-result {
+    color: var(--text-muted);
+    justify-content: center;
+    cursor: default;
+}
+
+.no-result:hover {
+    background: white;
+}

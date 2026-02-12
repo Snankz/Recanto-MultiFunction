@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Transportadora - Loja das Resinas</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="background-decor"></div>
+
+    <header class="main-header">
+        <nav class="nav-container">
+            <button class="nav-btn" onclick="window.location.href='index.html'">Calculadora Rendimento</button>
+            <button class="nav-btn" onclick="window.location.href='tacos-calculator.html'">Calculadora Tacos</button>
+            <button class="nav-btn" onclick="window.location.href='box-calculator.html'">Calculadora Caixas</button>
+            <button class="nav-btn" onclick="window.location.href='weight-calculator.html'">Calculadora Peso</button>
+            <button class="nav-btn active">Gerador de transportadora</button>
+            <button class="nav-btn" onclick="window.location.href='faq.html'">Catálogo / FAQ</button>
+            <button class="nav-btn" onclick="window.location.href='tax-calculator.html'">Calculadora Impostos</button>
+        </nav>
+    </header>
+
+    <div class="main-wrapper">
+        <main class="content-grid">
+            <!-- Left Column: Result / Output -->
+            <section class="calculator-column" style="background: white; border-right: 1px solid var(--border-color);">
+                <header class="header">
+                    <h1>Resultado</h1>
+                    <p>Copie e colha as informações</p>
+                </header>
+
+                <div style="height: 100%; display: flex; flex-direction: column;">
+                    <textarea id="result-text" readonly
+                        style="flex: 1; width: 100%; resize: none; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; font-family: monospace; font-size: 0.95rem; background: #fafafa; color: var(--text-main); margin-bottom: 1rem;"></textarea>
+
+                    <button id="copy-btn" class="action-btn"
+                        style="width: 100%; padding: 1rem; background: var(--secondary-color); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: background 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-copy"></i> Copiar Texto
+                    </button>
+                    <p id="copy-feedback"
+                        style="text-align: center; color: var(--secondary-color); font-size: 0.9rem; margin-top: 0.5rem; opacity: 0; transition: opacity 0.3s;">
+                        Texto copiado!</p>
+                </div>
+            </section>
+
+            <!-- Right Column: Inputs -->
+            <section class="calculator-column">
+                <header class="header">
+                    <h1>Gerar Etiqueta</h1>
+                    <p>Preencha os dados do envio</p>
+                </header>
+
+                <div class="input-section" style="overflow-y: auto; max-height: 600px; padding-right: 0.5rem;">
+
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-user"></i> CNPJ/CPF do Destinatário</label>
+                        <input type="text" id="dest-doc" class="gen-input" placeholder="000.000.000-00">
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-map-location-dot"></i> Cidade Destino</label>
+                        <input type="text" id="dest-city" class="gen-input" placeholder="Ex: Rio de Janeiro">
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-envelopes-bulk"></i> CEP Destino</label>
+                        <input type="text" id="dest-zip" class="gen-input" placeholder="00000-000">
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-box-open"></i> O que será transportado</label>
+                        <input type="text" id="content-desc" class="gen-input" placeholder="Ex: Verniz Bona">
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-file-invoice-dollar"></i> CNPJ do Pagador do frete</label>
+                        <input type="text" id="payer-doc" class="gen-input" placeholder="Se diferente...">
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-boxes-stacked"></i> Quantidades de Volumes</label>
+                        <input type="text" id="vol-qty" class="gen-input" placeholder="Ex: 2 caixas">
+                    </div>
+
+                    <!-- Toggle Mode -->
+                    <div
+                        style="margin-bottom: 1rem; background: #eee; padding: 0.5rem; border-radius: var(--radius-md); display: flex; gap: 0.5rem;">
+                        <button id="mode-cubage" class="mode-btn active"
+                            style="flex: 1; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer; background: white; color: var(--primary-color); font-weight: 600;">Cubagem
+                            Total</button>
+                        <button id="mode-boxes" class="mode-btn"
+                            style="flex: 1; padding: 0.5rem; border: none; border-radius: 4px; cursor: pointer; background: transparent; color: #666;">Medidas
+                            das Caixas</button>
+                    </div>
+
+                    <!-- Mode 1: Simple Cubage/Text -->
+                    <div id="section-cubage" class="input-group">
+                        <label><i class="fa-solid fa-ruler-combined"></i> Medidas e/ou Cubagem</label>
+                        <input type="text" id="vol-measures" class="gen-input" placeholder="Ex: 30x30x30 ou 0.5m³">
+                    </div>
+
+                    <!-- Mode 2: Box List Builder -->
+                    <div id="section-boxes" class="hidden">
+                        <label
+                            style="display:block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">Adicionar
+                            Medidas</label>
+
+                        <div
+                            style="display: grid; grid-template-columns: 0.5fr 1fr 1fr 1fr auto; gap: 0.5rem; align-items: end; margin-bottom: 1rem;">
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size: 0.7rem;">Qtd</label>
+                                <input type="number" id="add-qty" class="gen-input" value="1" style="padding: 0.5rem;">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size: 0.7rem;">Comp(cm)</label>
+                                <input type="number" id="add-l" class="gen-input" placeholder="30"
+                                    style="padding: 0.5rem;">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size: 0.7rem;">Larg(cm)</label>
+                                <input type="number" id="add-w" class="gen-input" placeholder="30"
+                                    style="padding: 0.5rem;">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label style="font-size: 0.7rem;">Alt(cm)</label>
+                                <input type="number" id="add-h" class="gen-input" placeholder="30"
+                                    style="padding: 0.5rem;">
+                            </div>
+                            <button id="add-measure-btn"
+                                style="background: var(--secondary-color); color: white; border: none; width: 36px; height: 36px; border-radius: 4px; cursor: pointer;">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+
+                        <!-- List of added boxes -->
+                        <ul id="box-measures-list"
+                            style="list-style: none; padding: 0; margin-bottom: 1rem; border: 1px solid #eee; border-radius: 4px; max-height: 150px; overflow-y: auto;">
+                            <!-- Items go here -->
+                        </ul>
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-weight-hanging"></i> Peso Bruto</label>
+                        <input type="text" id="gross-weight" class="gen-input" placeholder="Ex: 15kg">
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fa-solid fa-receipt"></i> Valor total da nota fiscal</label>
+                        <input type="text" id="invoice-value" class="gen-input" placeholder="R$ 0,00">
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="main-footer"></footer>
+
+    <script src="carrier-script.js"></script>
+</body>
+
+</html>
