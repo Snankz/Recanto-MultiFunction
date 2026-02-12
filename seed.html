@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sync Products to Supabase</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .log {
+            background: #f0f0f0;
+            padding: 1rem;
+            border-radius: 4px;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            border: 1px solid #ccc;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:disabled {
+            background: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sync Products to Supabase</h1>
+    <p>This tool will upload all products from <code>products.js</code> to your Supabase database.</p>
+    <p><strong>Warning:</strong> This will overwrite existing products with the same ID.</p>
+
+    <button id="sync-btn">Start Sync</button>
+
+    <div id="log" class="log">Ready...</div>
+
+    <!-- 1. Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- 2. Shared DB Service (initializes window.supabaseClient) -->
+    <script src="db-service.js"></script>
+
+    <!-- 3. Local Data -->
+    <script src="products.js"></script>
+
+    <script>
+        const btn = document.getElementById('sync-btn');
+        const logDiv = document.getElementById('log');
+
+        function log(msg, type = '') {
+            const div = document.createElement('div');
+            div.textContent = msg;
+            if (type) div.className = type;
+            logDiv.appendChild(div);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        btn.addEventListener('click', async () => {
+            btn.disabled = true;
+            log("Starting sync...", 'info');
+
+            if (!window.supabaseClient) {
+                log("Error: Supabase client not initialized. Check db-service.js", 'error');
+                btn.disabled = false;
+                return;
+            }
+
+            if (typeof products === 'undefined' || !Array.isArray(products)) {
+                log("Error: 'products' array not found. Check products.js", 'error');
+                btn.disabled = false;
+                return;
+            }
+
+            log(`Found ${products.length} products to sync.`);
+
+            let successCount = 0;
+            let errorCount = 0;
+
+            // Process in chunks to avoid rate limits or freezing
+            for (const p of products) {
+                try {
+                    // Clean up data if necessary (ensure numbers are numbers)
+                    // products.js seems to have correct types, but let's be safe
+
+                    const { error } = await window.supabaseClient
+                        .from('products')
+                        .upsert(p, { onConflict: 'id' });
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    log(`Synced: ${p.name}`, 'success');
+                    successCount++;
+                } catch (e) {
+                    console.error(e);
+                    log(`Failed: ${p.name} - ${e.message}`, 'error');
+                    errorCount++;
+                }
+            }
+
+            log('-----------------------------------');
+            log(`Sync Complete. Success: ${successCount}, Errors: ${errorCount}`);
+
+            if (errorCount === 0) {
+                log("All products synced successfully!", 'success');
+            } else {
+                log("Some products failed to sync. Check the log.", 'error');
+            }
+
+            btn.disabled = false;
+        });
+    </script>
+</body>
+
+</html>
