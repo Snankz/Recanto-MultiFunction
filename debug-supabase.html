@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h1>Supabase Debug</h1>
+    <div id="output">Testing...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://gujuzxjzfdkpucynpchg.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_-XhPC6LMuB1DJESX1Q72yw_CcFx8yNj';
+
+        const output = document.getElementById('output');
+
+        async function test() {
+            try {
+                if (!window.supabase) {
+                    output.innerText += '\nFailed to load library.';
+                    return;
+                }
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                output.innerText += '\nClient initialized.';
+
+                const { data, error } = await supabase.from('products').select('*').limit(1);
+
+                if (error) {
+                    output.innerText += '\nError: ' + JSON.stringify(error);
+                    console.error(error);
+                } else if (data) {
+                    output.innerText += '\nSuccess! Found ' + data.length + ' products.';
+                } else {
+                    output.innerText += '\nUnknown error, no data.';
+                }
+            } catch (err) {
+                output.innerText += '\nCritical Error: ' + err.message;
+                console.error(err);
+            }
+        }
+        test();
+    </script>
+</body>
+
+</html>

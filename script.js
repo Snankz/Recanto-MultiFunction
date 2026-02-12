@@ -27,16 +27,38 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentProduct = null;
     let allProducts = [];
 
+    // --- SUPABASE INTIALIZATION (External) ---
+    // Handled by db-service.js
+    // ---------------------------------------
+
     // Fetch products from Supabase
     async function loadProducts() {
+        console.log("loadProducts called");
         try {
             if (window.fetchProducts) {
                 allProducts = await window.fetchProducts();
+
+                if (!allProducts || allProducts.length === 0) {
+                    console.warn("Database returned 0 products.");
+                    // alert("Aviso: Banco de dados retornou 0 produtos.");
+                } else {
+                    console.log(`Loaded ${allProducts.length} products associated with script.js`);
+                }
             } else {
                 console.error("fetchProducts function not found.");
+                // Retry once
+                setTimeout(async () => {
+                    if (window.fetchProducts) {
+                        allProducts = await window.fetchProducts();
+                    } else {
+                        console.error("Retry failed: fetchProducts not found");
+                        alert("Erro: Serviço de dados não carregou. Recarregue a página.");
+                    }
+                }, 1000);
             }
         } catch (error) {
             console.error("Failed to load products:", error);
+            alert("Erro fatal ao carregar produtos: " + error.message);
         }
     }
 
