@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter / Avisos - Loja das Resinas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="newsletter-body">
+    <div class="background-decor"></div>
+
+    <header class="main-header">
+        <nav class="nav-container">
+            <button class="nav-btn" onclick="window.location.href='index.html'">Calculadora Rendimento</button>
+            <button class="nav-btn" onclick="window.location.href='tacos-calculator.html'">Calculadora Tacos</button>
+            <button class="nav-btn" onclick="window.location.href='box-calculator.html'">Calculadora Caixas</button>
+            <button class="nav-btn" onclick="window.location.href='weight-calculator.html'">Calculadora Peso</button>
+            <button class="nav-btn" onclick="window.location.href='carrier-generator.html'">Gerador de
+                transportadora</button>
+            <button class="nav-btn" onclick="window.location.href='label-generator.html'">Gerador de Etiquetas</button>
+            <button class="nav-btn active-nav" onclick="window.location.href='newsletter.html'">Newsletter /
+                Avisos</button>
+            <button class="nav-btn" onclick="window.location.href='faq.html'">Catálogo / FAQ</button>
+            <button class="nav-btn" onclick="window.location.href='tax-calculator.html'">Calculadora Impostos</button>
+        </nav>
+    </header>
+
+    <div class="main-wrapper newsletter-wrapper">
+        <main class="chat-container">
+            <!-- Messages Feed -->
+            <div id="messages-feed" class="messages-feed">
+                <!-- Messages injected here by script -->
+                <div class="empty-state-message" id="empty-state">
+                    <i class="fa-regular fa-comments"></i>
+                    <p>Nenhum aviso ainda. Escreva algo abaixo!</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bottom Input Bar -->
+    <footer class="chat-input-bar">
+        <div class="input-wrapper">
+            <!-- Image Upload Trigger -->
+            <label for="image-upload" class="icon-btn" title="Adicionar Imagem">
+                <i class="fa-solid fa-camera"></i>
+            </label>
+            <input type="file" id="image-upload" accept="image/*" style="display: none;">
+
+            <!-- Text Input -->
+            <textarea id="message-input" placeholder="Escreva um aviso..." rows="1"></textarea>
+
+            <!-- Send Button -->
+            <button id="send-btn" class="send-btn">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+        <!-- Image Preview (Small popup above bar if image selected) -->
+        <div id="image-preview-container" class="image-preview-popup hidden">
+            <div class="preview-wrapper">
+                <img id="image-preview" src="" alt="Preview">
+                <button id="clear-image" class="close-preview"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="db-service.js"></script>
+    <script src="newsletter-script.js"></script>
+</body>
+
+</html>
