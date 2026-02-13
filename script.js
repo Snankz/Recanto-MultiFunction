@@ -3,26 +3,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsContainer = document.getElementById('search-results');
     const clearBtn = document.getElementById('clear-search');
 
-    const selectedDisplay = document.getElementById('selected-product-display');
-    const selectedName = document.getElementById('selected-name');
-    const selectedBrand = document.getElementById('selected-brand');
+    // Removed legacy selection elements
 
     const areaInput = document.getElementById('area-input');
 
-    // Yield Info Elements
+    // Results & Yield Elements
     const yieldInfo = document.getElementById('yield-info');
     const yieldText = document.getElementById('yield-text');
-
-    // Result Elements
     const resultCard = document.getElementById('result-card');
     const resultValue = document.getElementById('result-value');
     const resultUnit = document.getElementById('result-unit');
-    const resultNote = document.querySelector('.result-note');
+    const resultNote = document.getElementById('result-note');
 
-    // Image Elements
-    const productImage = document.getElementById('product-image');
-    const productImageContainer = document.getElementById('product-image-container');
-    const imagePlaceholderMsg = document.getElementById('image-placeholder-msg');
+    // Detail Elements
+    // Detail Elements
+    // const productDataContainer = document.getElementById('product-data-container'); // Deprecated
+
+    // Legacy detail elements removed
 
     let currentProduct = null;
     let allProducts = [];
@@ -31,34 +28,75 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handled by db-service.js
     // ---------------------------------------
 
+    // Hardcoded Fallback Products (to ensure calculator works if DB fails)
+    const fallbackProducts = [
+        {
+            id: 'fallback-1',
+            name: 'Bona Traffic HD',
+            brand: 'Bona',
+            image: 'https://placehold.co/200x200?text=Bona',
+            type: 'coverage',
+            value: 10,
+            unit: 'm²/L',
+            note: 'Rendimento estimado por demão.',
+            // Fallback Details
+            model: 'Traffic HD',
+            category: 'Verniz',
+            ncm: '3209.90.19',
+            odour: 'Baixo',
+            drying_time: '2-3 horas',
+            cure_time: '5 dias'
+        },
+        {
+            id: 'fallback-2',
+            name: 'Skania Best',
+            brand: 'Skania',
+            image: 'https://placehold.co/200x200?text=Skania',
+            type: 'coverage',
+            value: 12,
+            unit: 'm²/L',
+            note: 'Rendimento estimado.',
+            // Fallback Details
+            model: 'Best',
+            category: 'Verniz',
+            ncm: '3209.90.19',
+            drying_time: '3 horas'
+        }
+    ];
+
     // Fetch products from Supabase
+    // Fetch products from Supabase or Local File
     async function loadProducts() {
         console.log("loadProducts called");
         try {
-            if (window.fetchProducts) {
-                allProducts = await window.fetchProducts();
+            // First, try to use the local products.js file which is now included
+            if (typeof products !== 'undefined' && Array.isArray(products) && products.length > 0) {
+                allProducts = products;
+                console.log(`Loaded ${allProducts.length} from local products.js.`);
+            }
+            // If local file is empty or missing, try simpler fallback
+            else if (window.fetchProducts) {
+                const dbProducts = await window.fetchProducts();
 
-                if (!allProducts || allProducts.length === 0) {
-                    console.warn("Database returned 0 products.");
-                    // alert("Aviso: Banco de dados retornou 0 produtos.");
+                if (Array.isArray(dbProducts) && dbProducts.length > 0) {
+                    allProducts = dbProducts;
+                    console.log(`Loaded ${allProducts.length} from DB.`);
                 } else {
-                    console.log(`Loaded ${allProducts.length} products associated with script.js`);
+                    console.warn("DB empty/failed. Using fallback.");
+                    allProducts = fallbackProducts;
                 }
             } else {
-                console.error("fetchProducts function not found.");
-                // Retry once
-                setTimeout(async () => {
-                    if (window.fetchProducts) {
-                        allProducts = await window.fetchProducts();
-                    } else {
-                        console.error("Retry failed: fetchProducts not found");
-                        alert("Erro: Serviço de dados não carregou. Recarregue a página.");
-                    }
-                }, 1000);
+                console.warn("No products found. Using fallback.");
+                allProducts = fallbackProducts;
             }
         } catch (error) {
-            console.error("Failed to load products:", error);
-            alert("Erro fatal ao carregar produtos: " + error.message);
+            console.error("Critical error loading. Using fallback.", error);
+            allProducts = fallbackProducts;
+        }
+
+        // Enable search if we have products
+        if (allProducts.length > 0) {
+            searchInput.placeholder = `Buscar entre ${allProducts.length} produtos...`;
         }
     }
 
@@ -101,9 +139,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Reset selection
         currentProduct = null;
-        selectedDisplay.classList.add('hidden');
+        // selectedDisplay.classList.add('hidden');
         yieldInfo.classList.add('hidden');
-        updateProductImage(null);
+
+        // Toggle Placeholders
+        const detailsSection = document.getElementById('product-details');
+        const placeholder = document.getElementById('intro-placeholder');
+
+        if (detailsSection) detailsSection.classList.add('hidden');
+        if (placeholder) placeholder.classList.remove('hidden');
+
         hideResult();
     }
 
@@ -128,11 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item.addEventListener('click', () => {
                 selectProduct(p);
                 resultsContainer.classList.add('hidden');
-                searchInput.value = ''; // Clear search text for cleaner look? Or keep p.name?
-                // Keeping it empty or replacing with name:
-                // searchInput.value = p.name; 
-                // Let's clear it and rely on the display box below.
-
+                searchInput.value = '';
                 clearBtn.style.display = 'none';
             });
             resultsContainer.appendChild(item);
@@ -143,16 +184,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectProduct(p) {
         currentProduct = p;
 
-        // Update selection UI
-        selectedName.textContent = p.name;
-        selectedBrand.textContent = p.brand;
-        selectedDisplay.classList.remove('hidden');
+        // Update selection UI (Calculator side)
+        // selectedName.textContent = p.name;
+        // selectedBrand.textContent = p.brand;
+        // selectedDisplay.classList.remove('hidden');
 
-        // Update Image
-        updateProductImage(p.image);
-
-        // Update Yield Display
+        // Update Yield Display (Logic Only, if needed, or remove)
         updateYieldDisplay(p);
+
+        // Update Product Details Card (Large Visual Aid)
+        updateProductDetails(p);
 
         // Recalculate
         calculate();
@@ -177,6 +218,78 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             yieldInfo.classList.add('hidden');
         }
+    }
+
+    function updateProductDetails(p) {
+        const detailsSection = document.getElementById('product-details');
+        const placeholder = document.getElementById('intro-placeholder');
+
+        if (!p) {
+            detailsSection.classList.add('hidden');
+            if (placeholder) placeholder.classList.remove('hidden');
+            return;
+        }
+
+        detailsSection.classList.remove('hidden');
+        if (placeholder) placeholder.classList.add('hidden');
+
+        // Elements
+        const detailImg = document.getElementById('detail-image');
+        const detailName = document.getElementById('detail-name-aid');
+        const detailBrand = document.getElementById('detail-brand-aid');
+        const infoGrid = document.getElementById('info-grid');
+        const detailBulletin = document.getElementById('detail-bulletin');
+        const detailFisqp = document.getElementById('detail-fisqp');
+
+        // Populate Basic Data
+        detailImg.src = p.image || 'https://placehold.co/400x400';
+        detailName.textContent = p.name;
+        detailBrand.textContent = p.brand;
+
+        // Links
+        detailBulletin.href = p.bulletin || '#';
+        if (!p.bulletin) detailBulletin.style.display = 'none';
+        else detailBulletin.style.display = 'inline-block';
+
+        detailFisqp.href = p.fisqp || '#';
+        if (!p.fisqp) detailFisqp.style.display = 'none';
+        else detailFisqp.style.display = 'inline-block';
+
+        // Build Info Grid
+        infoGrid.innerHTML = '';
+
+        // Helper for null/undefined check
+        const val = (v) => v || '-';
+
+        const fields = [
+            { label: 'Modelo', val: val(p.model) },
+            { label: 'Categoria', val: val(p.category) },
+            { label: 'Código Barras', val: val(p.barcode) },
+            { label: 'NCM', val: val(p.ncm) },
+            { label: 'CEST', val: val(p.cest) },
+            { label: 'Peso / Vol.', val: `${p.weight} ${p.measure_unit ? p.measure_unit.toUpperCase() : 'KG'}` },
+            { label: 'Rendimento', val: val(p.coverage) },
+            { label: 'Ferramenta', val: val(p.roller) },
+            { label: 'Composição', val: val(p.composition) },
+            { label: 'Odor', val: val(p.odor) },
+            { label: 'Cor Líquida', val: val(p.color) },
+            { label: 'Consistência', val: val(p.consistency) },
+            { label: 'Tom Final', val: val(p.tonality) },
+            { label: 'Tempo Secagem', val: val(p.drying_time) },
+            { label: 'Cura Total', val: val(p.cure_time) },
+            { label: 'Resistência', val: val(p.resistance) },
+            { label: 'Res. Especial', val: val(p.special_resistance) }
+        ];
+
+        fields.forEach(f => {
+            const div = document.createElement('div');
+            div.className = 'spec-item';
+            div.innerHTML = `
+                <span class="spec-label">${f.label}</span>
+                <span class="spec-val">${f.val}</span>
+            `;
+            infoGrid.appendChild(div);
+        });
     }
 
     // Calculation Logic
@@ -244,26 +357,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 10);
         }
     };
-
-    function updateProductImage(imageUrl) {
-        if (!imageUrl) {
-            productImageContainer.classList.add('hidden');
-            imagePlaceholderMsg.classList.remove('hidden');
-            return;
-        }
-
-        // Reset animation
-        productImage.classList.remove('animate-slide-up');
-        void productImage.offsetWidth; // Trigger reflow
-
-        productImage.src = imageUrl;
-
-        imagePlaceholderMsg.classList.add('hidden');
-        productImageContainer.classList.remove('hidden');
-
-        // Add animation class
-        productImage.classList.add('animate-slide-up');
-    }
 
     const hideResult = () => {
         resultCard.classList.remove('active');

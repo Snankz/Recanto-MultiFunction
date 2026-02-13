@@ -74,14 +74,82 @@
 
                 <div class="input-section">
 
-                    <div id="boxes-container">
-                        <!-- Dynamic box inputs will go here -->
+                    <!-- Static Input Form -->
+                    <div id="box-form"
+                        style="background: #f8f9fa; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 2rem;">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+
+                            <!-- Height -->
+                            <div>
+                                <label
+                                    style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-color);">Altura</label>
+                                <div style="position: relative;">
+                                    <input type="number" id="box-height" placeholder="0" class="calc-input"
+                                        style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                    <span
+                                        style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">cm</span>
+                                </div>
+                            </div>
+
+                            <!-- Width -->
+                            <div>
+                                <label
+                                    style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-color);">Largura</label>
+                                <div style="position: relative;">
+                                    <input type="number" id="box-width" placeholder="0" class="calc-input"
+                                        style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                    <span
+                                        style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">cm</span>
+                                </div>
+                            </div>
+
+                            <!-- Length -->
+                            <div>
+                                <label
+                                    style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-color);">Comprimento</label>
+                                <div style="position: relative;">
+                                    <input type="number" id="box-length" placeholder="0" class="calc-input"
+                                        style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                    <span
+                                        style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">cm</span>
+                                </div>
+                            </div>
+
+                            <!-- Weight -->
+                            <div>
+                                <label
+                                    style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-color);">Peso
+                                    Unitário</label>
+                                <div style="position: relative;">
+                                    <input type="text" id="box-weight" placeholder="0,000" inputmode="numeric"
+                                        class="calc-input"
+                                        style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                    <span
+                                        style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">g</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <button id="add-box-btn" class="action-btn"
+                            style="width: 100%; padding: 1rem; background: var(--secondary-color); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; margin-top: 1.5rem; transition: background 0.3s;">
+                            <i class="fa-solid fa-plus"></i> Adicionar à Lista
+                        </button>
                     </div>
 
-                    <button id="add-box-btn" class="action-btn"
-                        style="width: 100%; padding: 1rem; background: var(--secondary-color); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background 0.3s;">
-                        <i class="fa-solid fa-plus"></i> Adicionar Nova Caixa
-                    </button>
+                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin-bottom: 2rem;">
+
+                    <!-- List Container -->
+                    <div id="boxes-list-container">
+                        <ul id="boxes-list" style="list-style: none; padding: 0; margin: 0;">
+                            <!-- List items will go here -->
+                        </ul>
+                        <div id="empty-msg" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            <i class="fa-solid fa-box-open"
+                                style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <p>Nenhuma caixa adicionada.</p>
+                        </div>
+                    </div>
 
                 </div>
             </section>

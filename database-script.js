@@ -83,6 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
             rightCol.appendChild(createInput(index, 'brand', 'Marca', p.brand));
             rightCol.appendChild(createInput(index, 'image', 'Caminho Imagem', p.image));
 
+            // Group 1.5: Prices
+            addTitle('Preços');
+            rightCol.appendChild(createInput(index, 'cost_price', 'Preço de Custo (R$)', p.cost_price, 'number'));
+            rightCol.appendChild(createInput(index, 'sale_price', 'Preço de Venda (R$)', p.sale_price, 'number'));
+
             // Group 2: Calculator Data
             addTitle('Dados para Calculadora');
             rightCol.appendChild(createInput(index, 'type', 'Tipo (coverage/consumption)', p.type));
@@ -149,6 +154,100 @@ document.addEventListener('DOMContentLoaded', () => {
         div.appendChild(input);
         return div;
     }
+
+    // --- NEW PRODUCT MODAL LOGIC ---
+    const newProductBtn = document.getElementById('new-product-btn');
+    const modal = document.getElementById('new-product-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const newProductForm = document.getElementById('new-product-form');
+    const confirmAddBtn = document.getElementById('confirm-add-btn');
+
+    newProductBtn.addEventListener('click', () => {
+        renderNewProductForm();
+        modal.style.display = 'flex';
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+
+    function renderNewProductForm() {
+        newProductForm.innerHTML = '';
+
+        // Essential fields for creation
+        const fields = [
+            { id: 'new_id', label: 'ID (Único, sem espaços)', type: 'text', required: true },
+            { id: 'new_name', label: 'Nome do Produto', type: 'text', required: true },
+            { id: 'new_brand', label: 'Marca', type: 'text', required: true },
+            { id: 'new_cost_price', label: 'Preço Custo', type: 'number' },
+            { id: 'new_sale_price', label: 'Preço Venda', type: 'number' },
+            { id: 'new_weight', label: 'Peso', type: 'number' },
+            { id: 'new_measure_unit', label: 'Unidade (l/kg)', type: 'text', val: 'l' }
+        ];
+
+        fields.forEach(f => {
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = `
+                <label>${f.label}</label>
+                <input type="${f.type}" id="${f.id}" ${f.required ? 'required' : ''} value="${f.val || ''}">
+            `;
+            newProductForm.appendChild(div);
+        });
+    }
+
+    confirmAddBtn.addEventListener('click', async () => {
+        const id = document.getElementById('new_id').value.trim();
+        const name = document.getElementById('new_name').value.trim();
+        const brand = document.getElementById('new_brand').value.trim();
+
+        if (!id || !name || !brand) {
+            alert("Preencha ID, Nome e Marca.");
+            return;
+        }
+
+        const newObj = {
+            id: id,
+            name: name,
+            brand: brand,
+            cost_price: parseFloat(document.getElementById('new_cost_price').value) || 0,
+            sale_price: parseFloat(document.getElementById('new_sale_price').value) || 0,
+            weight: parseFloat(document.getElementById('new_weight').value) || 0,
+            measure_unit: document.getElementById('new_measure_unit').value || 'l',
+            // Defaults
+            type: 'coverage',
+            value: 0,
+            unit: 'M²/L'
+        };
+
+        confirmAddBtn.disabled = true;
+        confirmAddBtn.innerText = "Criando...";
+
+        try {
+            const { error } = await window.supabaseClient
+                .from('products')
+                .insert(newObj);
+
+            if (error) throw error;
+
+            alert("Produto criado com sucesso!");
+            modal.style.display = 'none';
+            // Refresh list
+            init();
+
+        } catch (e) {
+            console.error(e);
+            alert("Erro ao criar produto: " + e.message);
+        } finally {
+            confirmAddBtn.disabled = false;
+            confirmAddBtn.innerText = "Confirmar Cadastro";
+        }
+    });
 
     renderProducts();
 

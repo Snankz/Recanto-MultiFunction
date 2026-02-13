@@ -17,7 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize logic once products are loaded
     async function loadProducts() {
-        if (window.fetchProducts) {
+        if (typeof products !== 'undefined' && Array.isArray(products) && products.length > 0) {
+            allProducts = products;
+            console.log(`Loaded ${allProducts.length} from local products.js.`);
+        } else if (window.fetchProducts) {
             allProducts = await window.fetchProducts();
         } else {
             console.error("fetchProducts function not found!");

@@ -128,10 +128,36 @@
                 <h1>Gerenciamento de Produtos (DB)</h1>
                 <p>Edite as informações e clique em Salvar para baixar o arquivo atualizado.</p>
             </div>
-            <button id="save-db-btn" class="save-btn">
-                <i class="fa-solid fa-floppy-disk"></i> Salvar Alterações (Baixar products.js)
-            </button>
+            <div style="display: flex; gap: 1rem;">
+                <button id="new-product-btn" class="save-btn" style="background-color: var(--secondary-color);">
+                    <i class="fa-solid fa-plus"></i> Novo Produto
+                </button>
+                <button id="save-db-btn" class="save-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Salvar Alterações (Supabase)
+                </button>
+            </div>
         </div>
+
+        <!-- New Product Modal -->
+        <div id="new-product-modal"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+            <div
+                style="background: white; padding: 2rem; border-radius: var(--radius-lg); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2>Cadastrar Novo Produto</h2>
+                    <button id="close-modal-btn"
+                        style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                </div>
+                <div id="new-product-form" class="form-grid">
+                    <!-- Fields injected by JS -->
+                </div>
+                <div style="margin-top: 1.5rem; text-align: right;">
+                    <button id="confirm-add-btn" class="save-btn"
+                        style="background-color: var(--secondary-color);">Confirmar Cadastro</button>
+                </div>
+            </div>
+        </div>
+
 
         <div id="products-list">
             <!-- Products injected here -->

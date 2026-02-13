@@ -13,10 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     let items = [];
     let itemIdCounter = 1;
+    let allProducts = []; // Store fetched products
 
     // Initialize
-    updateHeader();
-    addItem();
+    async function init() {
+        if (window.fetchProducts) {
+            allProducts = await window.fetchProducts();
+            console.log("Tax Calc: Products loaded", allProducts.length);
+        }
+        updateHeader();
+        addItem();
+    }
+    init();
 
     // Initialize standard inputs with masks
     setupCurrencyInput(noteTotalInput);
@@ -59,6 +67,71 @@ document.addEventListener('DOMContentLoaded', () => {
         return parseFloat(cleanStr) || 0;
     }
 
+    // --- Product Search Logic ---
+    function createProductSearchWrapper(input, onSelect) {
+        // Create wrapper for positioning
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'relative';
+        wrapper.style.width = '100%';
+
+        wrapper.appendChild(input);
+
+        // Create dropdown
+        const dropdown = document.createElement('div');
+        dropdown.className = 'search-dropdown';
+        dropdown.style.display = 'none';
+        wrapper.appendChild(dropdown);
+
+        input.addEventListener('input', () => {
+            const query = input.value.toLowerCase().trim();
+            if (query.length < 1) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            const matches = allProducts.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                p.brand.toLowerCase().includes(query)
+            );
+
+            dropdown.innerHTML = '';
+            if (matches.length === 0) {
+                dropdown.style.display = 'none';
+                return; // Allow generic text
+            }
+
+            matches.forEach(p => {
+                const item = document.createElement('div');
+                item.style.padding = '8px';
+                item.style.cursor = 'pointer';
+                item.style.borderBottom = '1px solid #eee';
+                item.style.fontSize = '0.9rem';
+                item.innerHTML = `<strong>${p.name}</strong> <span style="font-size:0.8em; color:#666;">(${p.brand})</span>`;
+
+                item.addEventListener('mouseenter', () => item.style.background = '#f0f0f0');
+                item.addEventListener('mouseleave', () => item.style.background = 'white');
+
+                item.addEventListener('click', () => {
+                    input.value = p.name; // Set name
+                    dropdown.style.display = 'none';
+                    onSelect(p); // Callback with full product object
+                });
+                dropdown.appendChild(item);
+            });
+            dropdown.style.display = 'block';
+        });
+
+        // Hide on outside click
+        document.addEventListener('click', (e) => {
+            if (!wrapper.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        return wrapper;
+    }
+
+
     // --- Core Logic ---
 
     function updateHeader() {
@@ -80,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const id = itemIdCounter++;
         const item = {
             id: id,
-            name: `Produto ${id}`,
+            name: ``, // Empty start for search
             value: 0,        // Raw float value
             quantity: 1,     // Quantity Paid
             operation: 1,    // 1 (+), -1 (-)
@@ -125,11 +198,11 @@ document.addEventListener('DOMContentLoaded', () => {
             updateCalculations();
         });
 
-        // 2. Name Input
+        // 2. Name Input (now Searchable)
         const nameInput = document.createElement('input');
         nameInput.type = 'text';
         nameInput.value = item.name;
-        nameInput.placeholder = 'Produto';
+        nameInput.placeholder = 'Buscar Produto...';
         nameInput.addEventListener('input', (e) => item.name = e.target.value);
 
         // 3. Value Input (Masked)
@@ -140,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Set initial value formatted
         if (item.value > 0) {
-            valInput.value = item.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            valInput.value = item.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         setupCurrencyInput(valInput);
@@ -148,6 +221,18 @@ document.addEventListener('DOMContentLoaded', () => {
         valInput.addEventListener('input', (e) => {
             // Update item state with parsed value
             item.value = parseBRFloat(e.target.value);
+            updateCalculations();
+        });
+
+        // Attach Search Logic
+        const nameWrapper = createProductSearchWrapper(nameInput, (product) => {
+            item.name = product.name;
+            // Auto-fill value: Priority: cost_price > value > 0
+            let price = product.cost_price || product.value || 0;
+            item.value = parseFloat(price);
+
+            // Update UI
+            valInput.value = item.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             updateCalculations();
         });
 
@@ -222,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         removeBtn.addEventListener('click', () => removeItem(item.id));
 
         row.appendChild(qtyInput);
-        row.appendChild(nameInput);
+        row.appendChild(nameWrapper);
         row.appendChild(valInput);
         row.appendChild(toggleContainer);
         row.appendChild(bonusContainer);

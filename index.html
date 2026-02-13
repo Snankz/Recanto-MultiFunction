@@ -14,7 +14,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=7">
 </head>
 
 <body>
@@ -34,27 +34,69 @@
         </nav>
     </header>
 
-    <div class="main-wrapper">
-        <main class="content-grid">
-            <!-- Left Column: Product Image -->
-            <section class="image-column">
-                <div class="product-image-container hidden" id="product-image-container">
-                    <img id="product-image" src="" alt="Produto Selecionado" class="product-image">
-                </div>
-                <div class="placeholder-message" id="image-placeholder-msg">
-                    <i class="fa-solid fa-paint-roller"></i>
-                    <p>Selecione um produto para visualizar</p>
+    <div class="main-wrapper" style="max-width: 800px; margin: 0 auto;">
+        <main class="content-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+
+            <!-- Left Column: Placeholder (Initial State) -->
+            <section id="intro-placeholder" class="image-column"
+                style="background: white; border-radius: var(--radius-lg); padding: 3rem; text-align: center; display: flex; flex-direction: column; justify-content: center; height: 100%; min-height: 500px;">
+                <i class="fa-solid fa-calculator" style="font-size: 4rem; color: #e9ecef; margin-bottom: 1.5rem;"></i>
+                <h2 style="color: var(--primary-color); margin-bottom: 0.5rem;">Bem-vindo!</h2>
+                <p style="color: var(--text-muted);">Selecione um produto ao lado para ver sua ficha técnica e calcular
+                    o rendimento.</p>
+            </section>
+
+            <!-- Left Column: Product Details (Visual Aid - Hidden) -->
+            <section id="product-details" class="product-details hidden animate-slide-up"
+                style="background: white; padding: 2rem; border-radius: var(--radius-lg); height: 100%;">
+
+                <header class="section-header"
+                    style="text-align: center; margin-bottom: 2rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                    <h3 style="color: var(--primary-color);"><i class="fa-solid fa-circle-info"></i> Detalhes do Produto
+                    </h3>
+                </header>
+
+                <div class="details-grid-vertical" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Image -->
+                    <div class="detail-image-container" style="text-align: center;">
+                        <img id="detail-image" src="" alt="Produto" class="product-image" style="max-height: 250px;">
+                    </div>
+
+                    <!-- Info -->
+                    <div class="detail-info-container">
+                        <h2 id="detail-name-aid"
+                            style="color: var(--primary-color); font-size: 1.8rem; margin-bottom: 0.2rem;">Nome</h2>
+                        <h4 id="detail-brand-aid" style="color: var(--secondary-color); margin-bottom: 1rem;">Marca</h4>
+
+                        <div class="info-specs-grid" id="info-grid" style="grid-template-columns: 1fr 1fr;">
+                            <!-- Dynamic Key-Value Pairs injected here -->
+                        </div>
+
+                        <div
+                            style="margin-top: 1.5rem; text-align: center; display: flex; flex-direction: column; gap: 0.5rem;">
+                            <a id="detail-bulletin" href="#" target="_blank" class="action-btn"
+                                style="padding: 0.8rem; text-decoration: none; border-radius: var(--radius-md); background-color: var(--secondary-color);">
+                                <i class="fa-solid fa-file-lines"></i> Boletim Técnico
+                            </a>
+                            <a id="detail-fisqp" href="#" target="_blank" class="action-btn"
+                                style="padding: 0.8rem; text-decoration: none; border-radius: var(--radius-md); background-color: #6c757d;">
+                                <i class="fa-solid fa-file-pdf"></i> Ver FISQP
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <!-- Right Column: Calculator -->
-            <section class="calculator-column">
+            <!-- Right Column: Calculator Section -->
+            <section class="calculator-column" style="width: 100%; background: #f8f9fa;">
                 <header class="header">
-                    <h1>Calculadora de Materiais</h1>
-                    <p>Planeje sua obra com precisão profissional</p>
+                    <h1>Calculadora <span
+                            style="font-size: 0.5em; color: var(--secondary-color); vertical-align: middle;">(Atualizado)</span>
+                    </h1>
+                    <p>Planeje com precisão</p>
                 </header>
 
-                <form id="calculator-form" class="calculator-form">
+                <form id="calculator-form" class="calculator-form" style="width: 100%;">
                     <!-- Unified Search Input -->
                     <div class="input-group" style="position: relative;">
                         <label for="product-search">
@@ -69,16 +111,8 @@
 
                         <div id="search-results" class="search-dropdown hidden"></div>
 
-                        <!-- Product Selection Display (after search) -->
-                        <div id="selected-product-display" class="hidden"
-                            style="margin-top: 1rem; padding: 1rem; background: #e9ecef; border-radius: var(--radius-md); border-left: 4px solid var(--secondary-color);">
-                            <div style="font-weight: 600; color: var(--primary-color);" id="selected-name">Produto X
-                            </div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);" id="selected-brand">Marca Y</div>
-                        </div>
-
                         <!-- Yield Info Display -->
-                        <div id="yield-info" class="yield-display hidden" style="margin-top: 0.5rem;">
+                        <div id="yield-info" class="yield-display hidden" style="margin: 0;">
                             <i class="fa-solid fa-fill-drip"></i>
                             <span id="yield-text">Rendimento: --</span>
                         </div>
@@ -93,7 +127,7 @@
                     </div>
                 </form>
 
-                <div id="result-card" class="result-card hidden">
+                <div id="result-card" class="result-card hidden" style="margin-top: 2rem;">
                     <div class="result-header">
                         <span>Quantidade Estimada</span>
                     </div>
@@ -101,7 +135,7 @@
                         <h2 id="result-value">0</h2>
                         <span id="result-unit" class="unit">unidades</span>
                     </div>
-                    <p class="result-note">*Cálculo base para uma demão padrão.</p>
+                    <p id="result-note" class="result-note">*Cálculo base para uma demão padrão.</p>
                 </div>
             </section>
         </main>
@@ -125,8 +159,9 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="db-service.js?v=5"></script>
-    <script src="script.js?v=5"></script>
+    <script src="db-service.js?v=7"></script>
+    <script src="products.js?v=7"></script>
+    <script src="script.js?v=7"></script>
 </body>
 
 </html>

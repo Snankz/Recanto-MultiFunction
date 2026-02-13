@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedName = document.getElementById('selected-name');
     const selectedBrand = document.getElementById('selected-brand');
 
-    const qtyInput = document.getElementById('qty-input');
+    // const qtyInput = document.getElementById('qty-input'); // Removed
     const addBtn = document.getElementById('add-product-btn');
     const productList = document.getElementById('product-list');
     const totalWeightDisplay = document.getElementById('total-weight');
@@ -22,7 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Get unique products
     async function loadProducts() {
-        if (window.fetchProducts) {
+        if (typeof products !== 'undefined' && Array.isArray(products) && products.length > 0) {
+            allProducts = products;
+            console.log(`Loaded ${allProducts.length} from local products.js.`);
+        } else if (window.fetchProducts) {
             allProducts = await window.fetchProducts();
         } else {
             console.error("fetchProducts function not found!");
@@ -108,10 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Handle Add to List
     addBtn.addEventListener('click', () => {
-        const qty = parseInt(qtyInput.value);
+        // const qty = parseInt(qtyInput.value); // Removed from UI
+        const qty = 1; // Default to 1
 
-        if (!currentProduct || qty <= 0) {
-            if (!currentProduct) alert("Selecione um produto primeiro.");
+        if (!currentProduct) {
+            alert("Selecione um produto primeiro.");
             return;
         }
 
@@ -132,10 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
         renderList();
         calculateTotal();
 
-        // Optional: Reset selection after add?
-        // resetSearch(); 
-        // User might want to add same product again, so keep it? 
-        // Usually clearer to keep selection.
+        // Reset Search to allow adding next item easily
+        searchInput.value = '';
+        searchInput.focus();
+        clearBtn.style.display = 'none';
+        currentProduct = null;
+        selectedDisplay.classList.add('hidden');
     });
 
     // 4. Render List
@@ -162,11 +168,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="flex: 1; margin-right: 1rem;">
                     <div style="font-weight: 600; color: var(--primary-color);">${item.product.name}</div>
                     <div style="font-size: 0.8rem; color: var(--text-muted);">
-                        ${item.qty} x ${item.product.weight} ${item.product.measure_unit || 'kg'}
+                        ${item.product.weight} ${item.product.measure_unit || 'kg'} / un
                     </div>
                 </div>
+                
+                <!-- Editable Quantity -->
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-right: 1rem;">
+                     <input type="number" class="list-qty-input" data-index="${index}" value="${item.qty}" min="1" 
+                        style="width: 60px; padding: 5px; text-align: center; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+
                 <div style="display: flex; align-items: center; gap: 1rem;">
-                    <span style="font-weight: 700; color: var(--secondary-color);">
+                    <span style="font-weight: 700; color: var(--secondary-color); min-width: 80px; text-align: right;">
                         ${(item.product.weight * item.qty).toFixed(2)}kg
                     </span>
                     <button class="remove-btn" data-index="${index}" style="
@@ -186,6 +199,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 const index = parseInt(e.target.dataset.index);
                 cart.splice(index, 1);
                 renderList();
+                calculateTotal();
+            });
+        });
+
+        // Add listeners to quantity inputs
+        document.querySelectorAll('.list-qty-input').forEach(input => {
+            input.addEventListener('input', (e) => {
+                const index = parseInt(e.target.dataset.index);
+                const newQty = parseInt(e.target.value) || 1; // Default to 1 if empty/invalid
+                cart[index].qty = newQty;
+
+                // Update specific row total text without re-rendering everything (optimization)
+                // actually re-rendering is safer for consistency, let's just re-calculate totals and update text if performance issue.
+                // For now, full re-render is fine or just update the total weight display.
+                // Let's re-render to update the row's weight display.
+                // Wait, re-rendering loses focus on input. Bad UX.
+                // We should update the row's weight display manually here.
+
+                const row = e.target.closest('li');
+                const weightDisplay = row.querySelector('span[style*="font-weight: 700"]');
+                const item = cart[index];
+                weightDisplay.textContent = (item.product.weight * item.qty).toFixed(2) + 'kg';
+
                 calculateTotal();
             });
         });
