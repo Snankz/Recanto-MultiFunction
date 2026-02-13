@@ -25,8 +25,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Subscribe to Realtime Changes
     const subscription = window.supabaseClient
         .channel('public:newsletter_messages')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'newsletter_messages' }, () => {
-            fetchMessages();
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'newsletter_messages' }, payload => {
+            console.log('New message received:', payload);
+            handleNewMessage(payload.new);
+        })
+        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'newsletter_messages' }, payload => {
+            console.log('Message deleted:', payload);
+            handleDeleteMessage(payload.old.id);
         })
         .subscribe();
 
@@ -62,13 +67,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (error) throw error;
 
-            renderMessages(data || []);
+            // Render all
+            renderFeed(data || []);
         } catch (error) {
             console.error("Error fetching messages:", error);
         }
     }
 
-    function renderMessages(messages) {
+    function renderFeed(messages) {
         feed.innerHTML = '';
 
         if (messages.length === 0) {
@@ -84,9 +90,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    function handleNewMessage(msg) {
+        // Check if message already exists (optimistic update prevention)
+        if (document.getElementById(`msg-${msg.id}`)) return;
+
+        emptyState.style.display = 'none';
+        const el = createMessageElement(msg);
+        feed.appendChild(el);
+        scrollToBottom();
+    }
+
+    function handleDeleteMessage(id) {
+        const el = document.getElementById(`msg-${id}`);
+        if (el) {
+            el.remove();
+            if (feed.children.length === 0 || (feed.children.length === 1 && feed.children[0].id === 'empty-state')) {
+                feed.appendChild(emptyState);
+                emptyState.style.display = 'flex';
+            }
+        }
+    }
+
     function createMessageElement(msg) {
         const div = document.createElement('div');
-        div.className = 'message-bubble self'; // Assuming all are self/sent by "us" for now
+        div.className = 'message-bubble self';
+        div.id = `msg-${msg.id}`; // Add ID for easy removal
 
         // Image
         let imgHtml = '';
@@ -123,7 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!text && !currentImageFile) return;
 
-        // Visual Feedback (Disable button)
+        // Visual Feedback
         sendBtn.disabled = true;
         sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
@@ -148,16 +176,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // 2. Insert Message
-            const { error: insertError } = await window.supabaseClient
+            const payload = {
+                content: text,
+                image_url: publicURL
+            };
+
+            const { data, error: insertError } = await window.supabaseClient
                 .from('newsletter_messages')
-                .insert([{
-                    content: text,
-                    image_url: publicURL
-                }]);
+                .insert([payload])
+                .select(); // Return the inserted data
 
             if (insertError) throw insertError;
 
-            // Success: clear inputs (feed updates via realtime)
+            // OPTIMISTIC UPDATE: Render immediately using the returned data
+            if (data && data.length > 0) {
+                handleNewMessage(data[0]);
+            }
+
+            // Success cleanup
             messageInput.value = '';
             messageInput.style.height = 'auto';
             clearImageSelection();
@@ -168,6 +204,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } finally {
             sendBtn.disabled = false;
             sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+            messageInput.focus();
         }
     }
 
@@ -197,7 +234,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function scrollToBottom() {
-        feed.scrollTop = feed.scrollHeight;
+        feed.scrollTo({
+            top: feed.scrollHeight,
+            behavior: 'smooth'
+        });
     }
 
     function formatText(text) {
@@ -208,17 +248,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.deleteMessage = async function (id) {
         if (!confirm('Excluir este aviso?')) return;
 
+        // Optimistic Delete (Remove immediately)
+        handleDeleteMessage(id);
+
         try {
             const { error } = await window.supabaseClient
                 .from('newsletter_messages')
                 .delete()
                 .eq('id', id);
 
-            if (error) throw error;
-            // UI updates via realtime subscription
+            if (error) {
+                console.error("Error deleting:", error);
+                alert("Erro ao excluir no servidor. Recarregando...");
+                fetchMessages(); // Revert/Reload if failed
+            }
         } catch (e) {
             console.error("Error deleting:", e);
-            alert("Erro ao excluir.");
         }
     };
 });
