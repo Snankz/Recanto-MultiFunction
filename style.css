@@ -743,6 +743,7 @@ input[type=number] {
     width: 100%;
     border-radius: var(--radius-md);
 }
+
 /* --- Database / Product Form Styles --- */
 .db-container {
     max-width: 1200px;
@@ -808,3 +809,171 @@ input[type=number] {
     padding-bottom: 0.25rem;
 }
 
+
+/* --- Label Generator Styles --- */
+#label-preview-container .shipping-label-item {
+    border: 1px solid #000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.shipping-label-item {
+    background: #fff;
+    border: 1px solid #000;
+    /* Solid black border for print */
+    padding: 0.2cm;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: Arial, sans-serif;
+    /* Standard print font */
+    position: relative;
+    overflow: hidden;
+}
+
+.label-header {
+    border-bottom: 2px solid #000;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.service-name {
+    font-weight: 800;
+    font-size: 10pt;
+    text-transform: uppercase;
+}
+
+.logo-placeholder {
+    font-size: 12pt;
+    color: #333;
+}
+
+.label-recipient {
+    flex-grow: 1;
+    margin-bottom: 4px;
+}
+
+.label-tag {
+    font-size: 7pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 2px;
+}
+
+.dest-name {
+    font-size: 11pt;
+    font-weight: bold;
+    margin-bottom: 2px;
+    line-height: 1.1;
+}
+
+.dest-address {
+    font-size: 9pt;
+    line-height: 1.1;
+    margin-bottom: 2px;
+}
+
+.dest-cep {
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+.dest-obs {
+    font-size: 8pt;
+    font-style: italic;
+    margin-top: 2px;
+    border: 1px dashed #999;
+    padding: 2px;
+}
+
+.label-sender {
+    border-top: 1px solid #000;
+    padding-top: 2px;
+    font-size: 7pt;
+    line-height: 1.0;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sender-info {
+    flex-grow: 1;
+}
+
+.sender-logo-img {
+    max-height: 1.2cm;
+    /* Adjust based on label height */
+    max-width: 3cm;
+    object-fit: contain;
+    margin-left: 5px;
+}
+
+.ref-text {
+    display: block;
+    margin-top: 1px;
+    font-weight: 600;
+}
+
+/* --- Print Specifics --- */
+#print-area {
+    display: none;
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 5mm;
+        /* Small margin to avoid printer clipping */
+    }
+
+    body {
+        background: white;
+    }
+
+    .background-decor,
+    .main-header,
+    .main-wrapper,
+    .main-footer {
+        display: none !important;
+    }
+
+    #print-area {
+        display: block;
+    }
+
+    .print-page {
+        width: 200mm;
+        /* A4 minus margins approx */
+        height: 287mm;
+        position: relative;
+        page-break-after: always;
+        overflow: hidden;
+    }
+
+    .print-page:last-child {
+        page-break-after: auto;
+    }
+
+    .print-grid {
+        display: grid;
+        justify-content: start;
+        align-content: start;
+    }
+
+    .shipping-label-item {
+        border: 1px solid #000 !important;
+        /* Force border print */
+        page-break-inside: avoid;
+    }
+
+    /* Ensure graphics/backgrounds print if needed */
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
