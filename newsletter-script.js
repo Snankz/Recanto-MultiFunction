@@ -148,26 +148,52 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function sendMessage() {
         const text = messageInput.value.trim();
+        const fileToSend = currentImageFile; // Capture file reference before clearing
 
-        if (!text && !currentImageFile) return;
+        if (!text && !fileToSend) return;
 
-        // Visual Feedback
-        sendBtn.disabled = true;
-        sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        // --- 1. Optimistic Render ---
+        const tempId = `temp-${Date.now()}`;
+        let optimisticImageSrc = null;
 
+        // Prepare local preview for optimistic render
+        if (fileToSend) {
+            optimisticImageSrc = await new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.readAsDataURL(fileToSend);
+            });
+        }
+
+        const optimisticMsg = {
+            id: tempId,
+            content: text,
+            image_url: optimisticImageSrc,
+            created_at: new Date().toISOString()
+        };
+
+        // Render immediately
+        handleNewMessage(optimisticMsg);
+
+        // Clear Inputs Immediately
+        messageInput.value = '';
+        messageInput.style.height = 'auto';
+        clearImageSelection();
+        messageInput.focus();
+
+        // --- 2. Background Upload & Insert ---
         let publicURL = null;
 
         try {
-            // 1. Upload Image if exists
-            if (currentImageFile) {
+            // Upload Image if exists
+            if (fileToSend) {
                 const fileName = `img_${Date.now()}_${Math.random().toString(36).substring(7)}`;
                 const { data, error } = await window.supabaseClient.storage
                     .from('newsletter_images')
-                    .upload(fileName, currentImageFile);
+                    .upload(fileName, fileToSend);
 
                 if (error) throw error;
 
-                // Get Public URL
                 const urlData = window.supabaseClient.storage
                     .from('newsletter_images')
                     .getPublicUrl(fileName);
@@ -175,7 +201,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 publicURL = urlData.data.publicUrl;
             }
 
-            // 2. Insert Message
+            // Insert Message
             const payload = {
                 content: text,
                 image_url: publicURL
@@ -184,27 +210,38 @@ document.addEventListener('DOMContentLoaded', async () => {
             const { data, error: insertError } = await window.supabaseClient
                 .from('newsletter_messages')
                 .insert([payload])
-                .select(); // Return the inserted data
+                .select();
 
             if (insertError) throw insertError;
 
-            // OPTIMISTIC UPDATE: Render immediately using the returned data
+            // --- 3. Reconcile Optimistic Message ---
             if (data && data.length > 0) {
-                handleNewMessage(data[0]);
-            }
+                const realMsg = data[0];
+                const tempEl = document.getElementById(`msg-${tempId}`);
 
-            // Success cleanup
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-            clearImageSelection();
+                if (tempEl) {
+                    // Update ID so real-time events don't dupe it
+                    tempEl.id = `msg-${realMsg.id}`;
+
+                    // Update Delete Button ID
+                    const btn = tempEl.querySelector('.delete-msg-btn');
+                    if (btn) {
+                        btn.setAttribute('onclick', `deleteMessage(${realMsg.id})`);
+                    }
+
+                    // Optionally update image src to remote URL (usually same visual)
+                    if (realMsg.image_url) {
+                        const img = tempEl.querySelector('img');
+                        if (img) img.src = realMsg.image_url;
+                    }
+                }
+            }
 
         } catch (error) {
             console.error("Error sending message:", error);
             alert("Erro ao enviar mensagem: " + error.message);
-        } finally {
-            sendBtn.disabled = false;
-            sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
-            messageInput.focus();
+            // Revert optimistic update on failure
+            handleDeleteMessage(tempId);
         }
     }
 

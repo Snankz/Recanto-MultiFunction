@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.error("fetchProducts function not found!");
         }
+
+        // Render Catalog after loading
+        renderCatalog();
     }
     loadProducts();
 
@@ -112,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { label: 'Código Barras', val: p.barcode },
             { label: 'NCM', val: p.ncm },
             { label: 'CEST', val: p.cest },
-            { label: 'Peso / Vol.', val: `${p.weight} ${p.measure_unit.toUpperCase()}` },
+            { label: 'Peso / Vol.', val: `${p.weight} ${p.measure_unit ? p.measure_unit.toUpperCase() : ''}` },
             { label: 'Rendimento', val: p.coverage },
             { label: 'Ferramenta', val: p.roller },
             { label: 'Composição', val: p.composition },
@@ -134,6 +137,75 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="spec-val">${f.val || '-'}</span>
             `;
             infoGrid.appendChild(div);
+        });
+
+        // Scroll to top to show details
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- Catalog Render Logic ---
+    function renderCatalog() {
+        const catalogContainer = document.getElementById('catalog-container');
+        if (!catalogContainer) return;
+
+        catalogContainer.innerHTML = '';
+
+        // Group by Brand
+        const brands = {};
+        allProducts.forEach(p => {
+            const b = p.brand || 'Outros';
+            if (!brands[b]) brands[b] = [];
+            brands[b].push(p);
+        });
+
+        // Sort Brands Alphabetically
+        const sortedBrands = Object.keys(brands).sort();
+
+        sortedBrands.forEach(brand => {
+            // Brand Section
+            const section = document.createElement('div');
+            section.className = 'brand-section';
+
+            // Header
+            const header = document.createElement('div');
+            header.className = 'brand-header';
+            header.innerHTML = `<span>${brand}</span> <i class="fa-solid fa-chevron-down"></i>`;
+
+            // Content (Grid)
+            const content = document.createElement('div');
+            content.className = 'brand-content'; // Default expanded
+
+            // Items
+            brands[brand].forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'catalog-item';
+                item.innerHTML = `
+                    <div class="catalog-thumb">
+                        <img src="${p.image || 'https://placehold.co/150x150'}" alt="${p.name}">
+                    </div>
+                    <div class="catalog-name">${p.name}</div>
+                `;
+
+                // Click -> View Details
+                item.addEventListener('click', () => selectProduct(p));
+
+                content.appendChild(item);
+            });
+
+            // Toggle Logic
+            header.addEventListener('click', () => {
+                content.classList.toggle('collapsed');
+                const icon = header.querySelector('i');
+                if (content.classList.contains('collapsed')) {
+                    icon.className = 'fa-solid fa-chevron-right';
+                } else {
+                    icon.className = 'fa-solid fa-chevron-down';
+                }
+            });
+
+            section.appendChild(header);
+            section.appendChild(content);
+            catalogContainer.appendChild(section);
         });
     }
 });
