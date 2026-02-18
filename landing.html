@@ -213,10 +213,14 @@
                     <section>
                         <div style="background: #333; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                                <div class="input-group"><label>Alt (cm)</label><input type="number" id="box-h"></div>
-                                <div class="input-group"><label>Larg (cm)</label><input type="number" id="box-w"></div>
-                                <div class="input-group"><label>Comp (cm)</label><input type="number" id="box-l"></div>
-                                <div class="input-group"><label>Peso (g)</label><input type="number" id="box-weight">
+                                <div class="input-group"><label>Alt (cm)</label><input type="number" id="box-h"
+                                        placeholder="Ex: 20"></div>
+                                <div class="input-group"><label>Larg (cm)</label><input type="number" id="box-w"
+                                        placeholder="Ex: 30"></div>
+                                <div class="input-group"><label>Comp (cm)</label><input type="number" id="box-l"
+                                        placeholder="Ex: 40"></div>
+                                <div class="input-group"><label>Peso (g)</label><input type="number" id="box-weight"
+                                        placeholder="Ex: 500">
                                 </div>
                             </div>
                             <button id="box-add-btn" class="action-btn-full">Adicionar</button>
@@ -296,26 +300,29 @@
 
                         <div class="input-group"><label>CNPJ/CPF Destinatário</label><input type="text"
                                 id="carrier-dest-doc" maxlength="18" placeholder="00.000.000/0000-00"></div>
-                        <div class="input-group"><label>Destinatário</label><input type="text" id="carrier-dest-name">
+                        <div class="input-group"><label>Destinatário</label><input type="text" id="carrier-dest-name"
+                                placeholder="Ex: João da Silva / Empresa X">
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             <div class="input-group"><label>CEP Destino</label><input type="text" id="carrier-dest-cep"
                                     maxlength="9" placeholder="00000-000"></div>
-                            <div class="input-group"><label>Cidade Destino</label><input type="text" id="carrier-city">
+                            <div class="input-group"><label>Cidade Destino</label><input type="text" id="carrier-city"
+                                    placeholder="Ex: Rio de Janeiro">
                             </div>
                         </div>
 
-                        <div class="input-group"><label>Conteúdo</label><input type="text" id="carrier-content"></div>
+                        <div class="input-group"><label>Conteúdo</label><input type="text" id="carrier-content"
+                                placeholder="Ex: Acessórios para piso"></div>
 
                         <div class="input-group"><label>CNPJ Pagador Frete</label><input type="text"
-                                id="carrier-payer-doc" maxlength="18"></div>
+                                id="carrier-payer-doc" maxlength="18" placeholder="00.000.000/0000-00"></div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="input-group"><label>Qtd Volumes</label><input type="number"
-                                    id="carrier-vol-qty"></div>
+                            <div class="input-group"><label>Qtd Volumes</label><input type="number" id="carrier-vol-qty"
+                                    placeholder="Ex: 5"></div>
                             <div class="input-group"><label>Peso Bruto (kg)</label><input type="text"
-                                    id="carrier-weight"></div>
+                                    id="carrier-weight" placeholder="Ex: 15.5"></div>
                         </div>
 
                         <div class="input-group">
@@ -331,14 +338,21 @@
                                 style="margin-bottom:5px;">
 
                             <!-- Mode 2: Dimensions (Hidden by default) -->
-                            <div id="carrier-dims-container" class="hidden"
-                                style="display:grid; grid-template-columns: 0.8fr 1fr 1fr 1fr 0.5fr; gap:5px; margin-bottom:5px;">
-                                <input type="number" id="carrier-dim-q" placeholder="Qtd" value="1">
-                                <input type="number" id="carrier-dim-c" placeholder="C">
-                                <input type="number" id="carrier-dim-l" placeholder="L">
-                                <input type="number" id="carrier-dim-a" placeholder="A">
-                                <button id="carrier-add-dim" class="action-btn" style="width:100%;"><i
-                                        class="fa-solid fa-plus"></i></button>
+                            <div id="carrier-dims-wrapper">
+                                <button id="carrier-new-box-btn" class="action-btn-outline hidden"
+                                    style="width:100%; margin-bottom: 5px;">
+                                    <i class="fa-solid fa-plus"></i> Nova Caixa
+                                </button>
+
+                                <div id="carrier-dims-container" class="hidden"
+                                    style="display:grid; grid-template-columns: 0.8fr 1fr 1fr 1fr 0.5fr; gap:5px; margin-bottom:5px;">
+                                    <input type="number" id="carrier-dim-q" placeholder="Qtd" value="1">
+                                    <input type="number" id="carrier-dim-c" placeholder="C (cm)">
+                                    <input type="number" id="carrier-dim-l" placeholder="L (cm)">
+                                    <input type="number" id="carrier-dim-a" placeholder="A (cm)">
+                                    <button id="carrier-add-dim" class="btn-icon-orange" title="Adicionar Caixa"><i
+                                            class="fa-solid fa-check"></i></button>
+                                </div>
                             </div>
 
                             <!-- List/Cart -->
@@ -385,22 +399,27 @@
                                 placeholder="00000-000"></div>
 
                         <div class="input-group"><label>Nome / Empresa / Promoção:</label><input type="text"
-                                id="label-name"></div>
+                                id="label-name" placeholder="Ex: Destinatário Exemplo"></div>
 
                         <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 1rem;">
-                            <div class="input-group"><label>Endereço:</label><input type="text" id="label-address">
+                            <div class="input-group"><label>Endereço:</label><input type="text" id="label-address"
+                                    placeholder="Ex: Rua das Flores">
                             </div>
-                            <div class="input-group"><label>Número:</label><input type="text" id="label-number"></div>
+                            <div class="input-group"><label>Número:</label><input type="text" id="label-number"
+                                    placeholder="Ex: 123"></div>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="input-group"><label>Complemento:</label><input type="text" id="label-compl">
+                            <div class="input-group"><label>Complemento:</label><input type="text" id="label-compl"
+                                    placeholder="Ex: Ap 45">
                             </div>
-                            <div class="input-group"><label>Bairro:</label><input type="text" id="label-bairro"></div>
+                            <div class="input-group"><label>Bairro:</label><input type="text" id="label-bairro"
+                                    placeholder="Ex: Centro"></div>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 1rem;">
-                            <div class="input-group"><label>Cidade:</label><input type="text" id="label-city"></div>
+                            <div class="input-group"><label>Cidade:</label><input type="text" id="label-city"
+                                    placeholder="Ex: São Paulo"></div>
                             <div class="input-group">
                                 <label>UF:</label>
                                 <select id="label-uf">
@@ -437,7 +456,8 @@
 
                         <div class="input-group">
                             <label>Observação (máx. 60 caracteres):</label>
-                            <textarea id="label-obs" maxlength="60" rows="2" style="resize:none;"></textarea>
+                            <textarea id="label-obs" maxlength="60" rows="2" style="resize:none;"
+                                placeholder="Ex: Cuidado Frágil"></textarea>
                             <div style="text-align:right; font-size:0.8rem; color:var(--text-dim);"><span
                                     id="label-obs-count">60</span> caracteres restantes</div>
                         </div>
@@ -536,8 +556,10 @@
                 </header>
                 <section style="background: #2a2a2a; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="input-group"><label>Total Nota</label><input type="number" id="tax-note-val"></div>
-                        <div class="input-group"><label>Total Produtos</label><input type="number" id="tax-prod-val">
+                        <div class="input-group"><label>Total Nota</label><input type="number" id="tax-note-val"
+                                placeholder="Ex: 1000.00"></div>
+                        <div class="input-group"><label>Total Produtos</label><input type="number" id="tax-prod-val"
+                                placeholder="Ex: 950.00">
                         </div>
                     </div>
                     <div style="text-align: center; margin-top: 1rem; color: var(--accent-orange);">

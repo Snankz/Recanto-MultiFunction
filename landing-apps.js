@@ -13,16 +13,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupNavigation();
 
     // 3. Setup App Logics
-    setupRendimentoApp();
-    setupTacosApp();
-    setupCaixasApp();
-    setupPesoApp();
-    setupCarrierApp();
-    setupLabelsApp();
-    setupNewsletterApp();
-    setupFaqApp();
-    setupTaxApp();
-    setupDatabaseApp();
+    // 3. Setup App Logics
+    try { setupRendimentoApp(); } catch (e) { console.error("Error in Rendimento:", e); }
+    try { setupTacosApp(); } catch (e) { console.error("Error in Tacos:", e); }
+    try { setupCaixasApp(); } catch (e) { console.error("Error in Caixas:", e); }
+    try { setupPesoApp(); } catch (e) { console.error("Error in Peso:", e); }
+    try { setupCarrierApp(); } catch (e) { console.error("CRITICAL Error in Carrier:", e); }
+    try { setupLabelsApp(); } catch (e) { console.error("Error in Labels:", e); }
+    try { setupNewsletterApp(); } catch (e) { console.error("Error in Newsletter:", e); }
+    try { setupFaqApp(); } catch (e) { console.error("Error in FAQ:", e); }
+    try { setupTaxApp(); } catch (e) { console.error("Error in Tax:", e); }
+    try { setupDatabaseApp(); } catch (e) { console.error("Error in DB:", e); }
 
     // 4. Initial Animation
     showApp('app-rendimento');
@@ -30,7 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // --- HELPER: Load Products ---
 async function loadSharedProducts() {
-    console.log("Loading shared products...");
     try {
         if (typeof products !== 'undefined' && Array.isArray(products)) {
             allProducts = products.sort((a, b) => a.name.localeCompare(b.name));
@@ -562,6 +562,8 @@ function setupCarrierApp() {
     const measureUi = {
         toggleBtn: document.getElementById('carrier-toggle-mode'),
         m3Input: document.getElementById('carrier-measures-m3'),
+        dimsWrapper: document.getElementById('carrier-dims-wrapper'), // Wrapper
+        newBoxBtn: document.getElementById('carrier-new-box-btn'),     // New Btn
         dimsContainer: document.getElementById('carrier-dims-container'),
         dimQ: document.getElementById('carrier-dim-q'), // New Qty Input
         dimC: document.getElementById('carrier-dim-c'),
@@ -582,16 +584,35 @@ function setupCarrierApp() {
                 cubageMode = 'dims';
                 measureUi.toggleBtn.textContent = 'Alternar: Dimensões';
                 measureUi.m3Input.classList.add('hidden');
-                measureUi.dimsContainer.classList.remove('hidden');
-                measureUi.dimsContainer.style.display = 'grid';
+
+                // Requirement: Inputs appear immediately
+                if (measureUi.newBoxBtn) measureUi.newBoxBtn.classList.add('hidden');
+                if (measureUi.dimsContainer) {
+                    measureUi.dimsContainer.classList.remove('hidden');
+                    measureUi.dimsContainer.style.display = 'grid';
+                }
+
             } else {
                 cubageMode = 'm3';
                 measureUi.toggleBtn.textContent = 'Alternar: m³';
                 measureUi.m3Input.classList.remove('hidden');
-                measureUi.dimsContainer.classList.add('hidden');
-                measureUi.dimsContainer.style.display = 'none';
+
+                // Hide Dimensions UI
+                if (measureUi.newBoxBtn) measureUi.newBoxBtn.classList.add('hidden');
+                if (measureUi.dimsContainer) measureUi.dimsContainer.classList.add('hidden');
+                if (measureUi.dimsContainer) measureUi.dimsContainer.style.display = 'none';
             }
             updateFinalMeasureString();
+        });
+    }
+
+    // "Nova Caixa" Button Handler (Backup if needed, but inputs are default open now)
+    if (measureUi.newBoxBtn) {
+        measureUi.newBoxBtn.addEventListener('click', () => {
+            measureUi.newBoxBtn.classList.add('hidden');
+            measureUi.dimsContainer.classList.remove('hidden');
+            measureUi.dimsContainer.style.display = 'grid';
+            measureUi.dimQ.focus();
         });
     }
 
@@ -615,10 +636,17 @@ function setupCarrierApp() {
                 measureUi.dimC.value = '';
                 measureUi.dimL.value = '';
                 measureUi.dimA.value = '';
+
+                // UX Requirement: Make sure inputs stay visible
+                if (measureUi.dimsContainer) {
+                    measureUi.dimsContainer.classList.remove('hidden');
+                    measureUi.dimsContainer.style.display = 'grid';
+                }
                 measureUi.dimQ.focus();
             }
         });
     }
+
 
     // Direct m3 input update
     if (measureUi.m3Input) {
@@ -627,38 +655,7 @@ function setupCarrierApp() {
         });
     }
 
-    function renderCubageList() {
-        if (!measureUi.list) return;
-        measureUi.list.innerHTML = '';
-        cubageItems.forEach((item, idx) => {
-            const li = document.createElement('li');
-            li.style.display = 'flex';
-            li.style.justifyContent = 'space-between';
-            li.innerHTML = `<span>${item}</span> <i class="fa-solid fa-trash" style="cursor:pointer; color:red;" onclick="removeCubageItem(${idx})"></i>`;
-            measureUi.list.appendChild(li);
-        });
-    }
 
-    // Define global remover
-    window.removeCubageItem = (idx) => {
-        cubageItems.splice(idx, 1);
-        renderCubageList();
-        updateFinalMeasureString();
-    };
-
-    function updateFinalMeasureString() {
-        let str = '';
-        if (cubageMode === 'm3') {
-            str = measureUi.m3Input.value ? (measureUi.m3Input.value + ' m³') : '';
-        } else {
-            // Join items with " + "
-            str = cubageItems.join(' + ');
-            if (!str) str = 'N/A';
-        }
-
-        if (measureUi.finalInput) measureUi.finalInput.value = str;
-        generateCarrierText(); // Trigger update
-    }
 
     // Apply Masks
     if (inputs.destDoc) setupInputMasks(inputs.destDoc, 'cnpj_cpf');
@@ -668,28 +665,27 @@ function setupCarrierApp() {
 
     // Generator Logic
     const generateCarrierText = () => {
-        const destDoc = inputs.destDoc?.value || '';
-        const destName = inputs.destName?.value || '';
-        const destCep = inputs.destCep?.value || '';
-        const city = inputs.city?.value || '';
-        const content = inputs.content?.value || '';
-        const payerDoc = inputs.payerDoc?.value || '';
+        try {
+            const destDoc = inputs.destDoc?.value || '';
+            const destName = inputs.destName?.value || '';
+            const destCep = inputs.destCep?.value || '';
+            const city = inputs.city?.value || '';
+            const content = inputs.content?.value || '';
+            const payerDoc = inputs.payerDoc?.value || '';
 
-        const vol = inputs.volQty?.value || '';
-        const weight = inputs.weight?.value || '';
-        const val = inputs.value?.value || '';
+            const vol = inputs.volQty?.value || '';
+            const weight = inputs.weight?.value || '';
+            const val = inputs.value?.value || '';
 
-        // Get measures from our new logic
-        let measures = measureUi.finalInput?.value || '';
-        // Fallback if mode is m3 but list empty (though list is for dims)
-        if (cubageMode === 'm3' && !measures) measures = measureUi.m3Input.value ? (measureUi.m3Input.value + ' m³') : '';
-        if (cubageMode === 'dims' && cubageItems.length > 0 && !measures) measures = cubageItems.join(' + ');
-        if (cubageMode === 'dims' && cubageItems.length === 0) measures = 'N/A';
+            // Get measures from our new logic
+            let measures = measureUi.finalInput?.value || '';
+            // Fallback if mode is m3 but list empty (though list is for dims)
+            if (cubageMode === 'm3' && !measures) measures = measureUi.m3Input.value ? (measureUi.m3Input.value + ' m³') : '';
+            if (cubageMode === 'dims' && cubageItems.length > 0 && !measures) measures = cubageItems.join(' + ');
+            if (cubageMode === 'dims' && cubageItems.length === 0) measures = 'N/A';
 
-
-        // Template using emojis and specific structure
-        // Template using emojis and specific structure
-        const text = `👨🦲 CNPJ/CPF do Remetente: [ 23843103000119 ]
+            // Template using emojis and specific structure
+            const text = `👨🦲 CNPJ/CPF do Remetente: [ 23843103000119 ]
 👨🦲 CNPJ/CPF do Destinatário: [ ${destDoc} ]
 🚚 Cidade Origem: [ São Paulo ]
 ✈ Cidade Destino: [ ${city.toUpperCase()} ]
@@ -702,7 +698,50 @@ function setupCarrierApp() {
 ⚓ Peso Bruto: [ ${weight} ]
 🏷 Valor total da nota fiscal: [ ${val} ]`;
 
-        if (resultArea) resultArea.value = text;
+            if (resultArea) resultArea.value = text;
+        } catch (e) {
+            if (resultArea) resultArea.value = 'Erro ao gerar texto: ' + e.message;
+            console.error(e);
+        }
+    };
+
+    // Helper: Update Final Measure String
+    function updateFinalMeasureString() {
+        let str = '';
+        if (cubageMode === 'm3') {
+            str = measureUi.m3Input.value ? (measureUi.m3Input.value + ' m³') : '';
+        } else {
+            str = cubageItems.join(' + ');
+            if (!str) str = 'N/A';
+        }
+
+        if (measureUi.finalInput) measureUi.finalInput.value = str;
+        generateCarrierText();
+    }
+
+    // Helper: Render List
+    function renderCubageList() {
+        if (!measureUi.list) return;
+        measureUi.list.innerHTML = '';
+        cubageItems.forEach((item, idx) => {
+            const li = document.createElement('li');
+            li.style.display = 'flex';
+            li.style.justifyContent = 'space-between';
+            li.style.alignItems = 'center';
+            li.style.marginBottom = '5px';
+            li.style.background = 'rgba(255,255,255,0.05)';
+            li.style.padding = '5px 10px';
+            li.style.borderRadius = '4px';
+            li.innerHTML = `<span>${item}</span> <button class="btn-delete-item" onclick="removeCubageItem(${idx})"><i class="fa-solid fa-trash"></i></button>`;
+            measureUi.list.appendChild(li);
+        });
+    }
+
+    // Global Remover (closure awareness)
+    window.removeCubageItem = (idx) => {
+        cubageItems.splice(idx, 1);
+        renderCubageList();
+        updateFinalMeasureString();
     };
 
     // Real-time Updates: Add listener to ALL inputs
@@ -730,6 +769,7 @@ function setupCarrierApp() {
     // Initial run
     generateCarrierText();
 }
+
 
 // --- APP 6: LABELS ---
 function setupLabelsApp() {

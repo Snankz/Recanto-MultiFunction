@@ -763,3 +763,95 @@ input[type=number] {
     margin-bottom: 1rem !important;
     /* Force 1rem spacing */
 }
+
+/* --- Carrier Generator UI --- */
+.action-btn-outline {
+    background: transparent;
+    border: 1px solid var(--accent-orange);
+    color: var(--accent-orange);
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+}
+
+.action-btn-outline:hover {
+    background: rgba(255, 130, 1, 0.1);
+}
+
+.action-btn,
+.action-btn-full {
+    background: var(--accent-orange);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    text-align: center;
+    width: 100%;
+    /* Default full width */
+}
+
+.action-btn:hover,
+.action-btn-full:hover {
+    background: #e67300;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 130, 1, 0.3);
+}
+
+.btn-icon-orange {
+    background: var(--accent-orange);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    /* Square/Circle aspect */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-icon-orange:hover {
+    background: #e67300;
+    /* Darker orange */
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(255, 130, 1, 0.4);
+}
+
+.btn-delete-item {
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(255, 0, 0, 0.4);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-delete-item:hover {
+    background: rgba(255, 0, 0, 0.8);
+    border-color: red;
+}
+
+/* Specific style for carrier toggle button */
+#carrier-toggle-mode {
+    padding: 12px 10px;
+    /* Taller (12px top/bottom) and Narrower (10px left/right) */
+    line-height: 1;
+    height: auto;
+    min-width: 120px;
+    /* Ensure generic width isn't too wide */
+    white-space: nowrap;
+}
