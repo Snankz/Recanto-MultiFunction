@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recanto - Home</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="landing.css">
+</head>
+
+<body class="dark-theme">
+
+    <div class="main-container">
+
+        <!-- Left Column: Navigation (Sticky) -->
+        <aside class="nav-column">
+            <h2 class="column-title">Navegação</h2>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-target="app-rendimento">
+                    <div class="nav-icon-circle">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <span class="nav-text">Rendimento</span>
+                </a>
+                <a href="#" class="nav-item" data-target="app-tacos">
+                    <div class="nav-icon-circle">
+                        <i class="fa-solid fa-cubes-stacked"></i>
+                    </div>
+                    <span class="nav-text">Tacos</span>
+                </a>
+                <a href="#" class="nav-item" data-target="app-caixas">
+                    <div class="nav-icon-circle">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <span class="nav-text">Caixas</span>
+                </a>
+                <a href="#" class="nav-item" data-target="app-peso">
+                    <div class="nav-icon-circle">
+                        <i class="fa-solid fa-weight-scale"></i>
+                    </div>
+                    <span class="nav-text">Peso</span>
+                </a>
+                <a href="#" class="nav-item" data-target="app-carrier">
+                    <div class="nav-icon-circle">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <span class="nav-text">Transportadora</span>
+                </a>
+                <a href="#" class="nav-item" data-target="app-labels">
+                    <div class="nav-icon-circle">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                    <span class="nav-text">Etiquetas</span>
+                </a>
+                <a href="#" class="nav-item" data-target="app-newsletter">
+                    <div class="nav-icon-circle">
+                        <i class="fa-regular fa-newspaper"></i>
+                    </div>
+                    <span class="nav-text">Newsletter</span>
+                </a>
+                <a href="#" class="nav-item" data-target="app-faq">
+                    <div class="nav-icon-circle">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </div>
+                    <span class="nav-text">Catálogo/FAQ</span>
+                </a>
+                <a href="#" class="nav-item" data-target="app-tax">
+                    <div class="nav-icon-circle">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+                    <span class="nav-text">Impostos</span>
+                </a>
+                <a href="#" class="nav-item" data-target="app-database">
+                    <div class="nav-icon-circle">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <span class="nav-text">Banco de dados</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Center Column: App (Scrollable) -->
+        <main class="app-column">
+
+            <!-- ====== APP 1: RENDIMENTO (Home) ====== -->
+            <div id="app-rendimento" class="app-section">
+                <header class="header">
+                    <h1>Calculadora Rendimento</h1>
+                    <p>Planeje com precisão</p>
+                </header>
+                <div class="content-grid">
+                    <!-- Left: Inputs -->
+                    <!-- Left: Inputs & Result -->
+                    <section class="calculator-column" style="height: 100%; display: flex; flex-direction: column;">
+                        <div class="input-group" style="position: relative;">
+                            <label><i class="fa-solid fa-magnifying-glass"></i> Buscar Produto</label>
+                            <input type="text" id="rendimento-search" placeholder="Digite o nome..." autocomplete="off">
+                            <div id="rendimento-results" class="search-dropdown hidden"></div>
+                        </div>
+                        <div class="input-group" style="margin-top: 1rem;">
+                            <label><i class="fa-solid fa-ruler-combined"></i> Área (m²)</label>
+                            <input type="number" id="rendimento-area" placeholder="0.00" min="0" step="0.01">
+                        </div>
+
+                        <!-- Result Card (Moved to Left) -->
+                        <div id="rendimento-result-card" class="result-card hidden"
+                            style="margin-top: 2rem; background: var(--primary-blue); padding: 1.5rem; border-radius: 8px; text-align: center; border: 1px solid var(--accent-orange);">
+                            <h3>Quantidade Estimada</h3>
+                            <h2 id="rendimento-total-val" style="font-size: 2.5rem; color: white;">0</h2>
+                            <span id="rendimento-total-unit" style="color: var(--text-dim);">unidades</span>
+                        </div>
+                    </section>
+
+                    <!-- Divider -->
+                    <div class="vertical-divider"></div>
+
+                    <!-- Right: Technical Data -->
+                    <section class="image-column"
+                        style="height: 100%; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto;">
+                        <!-- Placeholder -->
+                        <div id="rendimento-intro-placeholder"
+                            style="background: #2a2a2a; border-radius: 8px; padding: 2rem; text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(255,255,255,0.05);">
+                            <i class="fa-solid fa-calculator"
+                                style="font-size: 4rem; color: var(--text-dim); margin-bottom: 1.5rem;"></i>
+                            <h2 style="color: var(--accent-orange); margin-bottom: 0.5rem;">Bem-vindo!</h2>
+                            <p style="color: var(--text-dim);">Selecione um produto para começar.</p>
+                        </div>
+
+                        <!-- Details Container -->
+                        <div id="rendimento-product-details" class="hidden animate-slide-up">
+
+                            <!-- Header with Image and Name -->
+                            <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+                                <img id="rendimento-detail-image" src="" alt="Produto"
+                                    style="width: 80px; height: 80px; object-fit: contain; background: white; border-radius: 4px; padding: 5px;">
+                                <div>
+                                    <h2 id="rendimento-detail-name"
+                                        style="color: var(--accent-orange); font-size: 1.5rem; line-height: 1.2;">Nome
+                                    </h2>
+                                    <h4 id="rendimento-detail-brand"
+                                        style="color: var(--text-dim); font-weight: normal;">Marca</h4>
+                                </div>
+                            </div>
+
+                            <!-- Tech Grid -->
+                            <div id="rendimento-tech-grid" class="tech-data-grid">
+                                <!-- JS Injected Content -->
+                            </div>
+
+                            <!-- Buttons -->
+                            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                <a id="btn-fisqp" href="#" target="_blank" class="action-btn-full hidden"
+                                    style="text-align: center; text-decoration: none;">
+                                    <i class="fa-solid fa-file-medical"></i> FISPQ
+                                </a>
+                                <a id="btn-bulletin" href="#" target="_blank" class="action-btn-full hidden"
+                                    style="text-align: center; text-decoration: none;">
+                                    <i class="fa-solid fa-file-lines"></i> Ficha Técnica
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ====== APP 2: TACOS ====== -->
+            <div id="app-tacos" class="app-section hidden">
+                <header class="header">
+                    <h1>Calculadora de Tacos</h1>
+                    <p>Unidades por tipo de madeira</p>
+                </header>
+                <div class="content-grid">
+                    <!-- Left: Input -->
+                    <section>
+                        <div class="input-group">
+                            <label><i class="fa-solid fa-ruler-combined"></i> Área a cobrir (m²)</label>
+                            <input type="number" id="tacos-area" placeholder="0.00"
+                                style="font-size: 1.5rem; text-align: center;">
+                        </div>
+                        <p style="margin-top: 1rem; color: var(--text-dim); font-size: 0.9rem;"><i
+                                class="fa-solid fa-circle-info"></i> Cálculo exato sem perda.</p>
+                    </section>
+
+                    <!-- Divider -->
+                    <div class="vertical-divider"></div>
+
+                    <!-- Right: Result -->
+                    <section
+                        style="background: #2a2a2a; padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); max-height: 500px; overflow-y: auto;">
+                        <h3 style="color: var(--accent-orange); margin-bottom: 1rem;">Resultados</h3>
+                        <div id="tacos-results-list">
+                            <p style="color: var(--text-dim);">Informe a área para calcular.</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ====== APP 3: CAIXAS ====== -->
+            <div id="app-caixas" class="app-section hidden">
+                <header class="header">
+                    <h1>Calculadora de Caixas</h1>
+                    <p>Volume e Peso Total</p>
+                </header>
+                <div class="content-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <!-- Input (Now Left) -->
+                    <section>
+                        <div style="background: #333; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group"><label>Alt (cm)</label><input type="number" id="box-h"></div>
+                                <div class="input-group"><label>Larg (cm)</label><input type="number" id="box-w"></div>
+                                <div class="input-group"><label>Comp (cm)</label><input type="number" id="box-l"></div>
+                                <div class="input-group"><label>Peso (g)</label><input type="number" id="box-weight">
+                                </div>
+                            </div>
+                            <button id="box-add-btn" class="action-btn-full">Adicionar</button>
+                        </div>
+                        <ul id="box-list" style="list-style: none; max-height: 200px; overflow-y: auto;"></ul>
+                    </section>
+
+                    <!-- Results (Now Right) -->
+                    <section
+                        style="text-align: center; padding: 2rem; background: #2a2a2a; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="margin-bottom: 2rem;">
+                            <i class="fa-solid fa-cubes"
+                                style="font-size: 2.5rem; color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                            <h2 id="caixas-total-vol" style="font-size: 3rem;">0.000</h2>
+                            <span style="color: var(--text-dim);">Volume Total (m³)</span>
+                        </div>
+                        <div>
+                            <i class="fa-solid fa-weight-hanging"
+                                style="font-size: 2.5rem; color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                            <h2 id="caixas-total-weight" style="font-size: 3rem;">0</h2>
+                            <span style="color: var(--text-dim);">Peso Total (g)</span>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ====== APP 4: PESO ====== -->
+            <div id="app-peso" class="app-section hidden">
+                <header class="header">
+                    <h1>Calculadora de Peso</h1>
+                    <p>Soma líquida de produtos</p>
+                </header>
+                <div class="content-grid">
+                    <!-- Left: Input & List -->
+                    <section>
+                        <div class="input-group" style="position: relative;">
+                            <label>Buscar Produto</label>
+                            <input type="text" id="peso-search" placeholder="Nome do produto...">
+                            <div id="peso-search-results" class="search-dropdown hidden"></div>
+                        </div>
+                        <div id="peso-selected-card" class="hidden"
+                            style="background: #333; padding: 1rem; margin: 1rem 0; border-radius: 4px; text-align: center;">
+                            <h3 id="peso-sel-name" style="color: var(--accent-orange);">Produto</h3>
+                            <button id="peso-add-btn" class="action-btn-full" style="margin-top: 0.5rem;">Adicionar à
+                                Lista</button>
+                        </div>
+                        <ul id="peso-list"
+                            style="list-style: none; margin-top: 1rem; max-height: 250px; overflow-y: auto;"></ul>
+                    </section>
+
+                    <!-- Divider -->
+                    <div class="vertical-divider"></div>
+
+                    <!-- Right: Result -->
+                    <section
+                        style="text-align: center; padding: 2rem; background: #2a2a2a; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; justify-content:center;">
+                        <i class="fa-solid fa-scale-balanced"
+                            style="font-size: 3rem; color: var(--accent-orange); margin-bottom: 1rem;"></i>
+                        <h2 id="peso-total-val" style="font-size: 4rem;">0.00</h2>
+                        <span style="color: var(--text-dim); font-size: 1.2rem;">kg</span>
+                        <p style="margin-top: 1rem; color: var(--text-dim);">Itens: <span id="peso-total-items">0</span>
+                        </p>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ====== APP 5: TRANSPORTADORA ====== -->
+            <div id="app-carrier" class="app-section hidden">
+                <header class="header">
+                    <h1>Gerador de Transportadora</h1>
+                    <p>Dados de envio</p>
+                </header>
+                <div class="content-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <!-- Left: Inputs -->
+                    <section style="max-height: 500px; overflow-y: auto; padding-right: 5px;">
+                        <h3 style="color: var(--accent-orange); margin-bottom: 1rem;">Dados</h3>
+
+                        <div class="input-group"><label>CNPJ/CPF Destinatário</label><input type="text"
+                                id="carrier-dest-doc" maxlength="18" placeholder="00.000.000/0000-00"></div>
+                        <div class="input-group"><label>Destinatário</label><input type="text" id="carrier-dest-name">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="input-group"><label>CEP Destino</label><input type="text" id="carrier-dest-cep"
+                                    maxlength="9" placeholder="00000-000"></div>
+                            <div class="input-group"><label>Cidade Destino</label><input type="text" id="carrier-city">
+                            </div>
+                        </div>
+
+                        <div class="input-group"><label>Conteúdo</label><input type="text" id="carrier-content"></div>
+
+                        <div class="input-group"><label>CNPJ Pagador Frete</label><input type="text"
+                                id="carrier-payer-doc" maxlength="18"></div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="input-group"><label>Qtd Volumes</label><input type="number"
+                                    id="carrier-vol-qty"></div>
+                            <div class="input-group"><label>Peso Bruto (kg)</label><input type="text"
+                                    id="carrier-weight"></div>
+                        </div>
+
+                        <div class="input-group">
+                            <div
+                                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                                <label style="margin:0;">Medidas / Cubagem</label>
+                                <button id="carrier-toggle-mode" class="action-btn"
+                                    style="padding:2px 8px; font-size:0.8rem;">Alternar: m³</button>
+                            </div>
+
+                            <!-- Mode 1: m3 direct -->
+                            <input type="text" id="carrier-measures-m3" placeholder="Ex: 0.5"
+                                style="margin-bottom:5px;">
+
+                            <!-- Mode 2: Dimensions (Hidden by default) -->
+                            <div id="carrier-dims-container" class="hidden"
+                                style="display:grid; grid-template-columns: 0.8fr 1fr 1fr 1fr 0.5fr; gap:5px; margin-bottom:5px;">
+                                <input type="number" id="carrier-dim-q" placeholder="Qtd" value="1">
+                                <input type="number" id="carrier-dim-c" placeholder="C">
+                                <input type="number" id="carrier-dim-l" placeholder="L">
+                                <input type="number" id="carrier-dim-a" placeholder="A">
+                                <button id="carrier-add-dim" class="action-btn" style="width:100%;"><i
+                                        class="fa-solid fa-plus"></i></button>
+                            </div>
+
+                            <!-- List/Cart -->
+                            <ul id="carrier-measures-list"
+                                style="list-style:none; font-size:0.8rem; color:var(--text-dim); margin-bottom:10px;">
+                            </ul>
+                            <input type="hidden" id="carrier-measures-final"> <!-- Hidden field for generator -->
+                        </div>
+
+                        <div class="input-group"><label>Valor Nota (R$)</label><input type="text" id="carrier-value"
+                                placeholder="R$ 0,00">
+                        </div>
+
+                        <button id="carrier-gen-btn" class="action-btn-full" style="margin-top: 1rem;">Gerar
+                            Texto</button>
+                    </section>
+
+                    <!-- Right: Result -->
+                    <section>
+                        <h3 style="color: var(--accent-orange); margin-bottom: 1rem;">Texto Gerado</h3>
+                        <textarea id="carrier-result" readonly
+                            style="width: 100%; height: 300px; background: #2a2a2a; border: 1px solid #444; color: white; padding: 1rem; font-family: monospace; resize: none; font-size: 1.1rem;"></textarea>
+                        <button id="carrier-copy-btn" class="action-btn-full" style="margin-top: 1rem;"><i
+                                class="fa-solid fa-copy"></i> Copiar</button>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ====== APP 6: ETIQUETAS ====== -->
+            <div id="app-labels" class="app-section hidden">
+                <header class="header">
+                    <h1>Gerador de Etiquetas</h1>
+                    <p>Crie etiquetas de envio personalizadas (Estilo Correios)</p>
+                </header>
+                <div class="content-grid" style="grid-template-columns: 1.2fr 0.8fr; gap: 2rem;">
+
+                    <!-- Form Section -->
+                    <section style="max-height: 600px; overflow-y: auto; padding-right: 20px;">
+                        <h3 style="color: var(--accent-orange); margin-bottom: 1rem;">Destinatário</h3>
+
+
+
+                        <div class="input-group"><label>CEP:</label><input type="text" id="label-cep"
+                                placeholder="00000-000"></div>
+
+                        <div class="input-group"><label>Nome / Empresa / Promoção:</label><input type="text"
+                                id="label-name"></div>
+
+                        <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 1rem;">
+                            <div class="input-group"><label>Endereço:</label><input type="text" id="label-address">
+                            </div>
+                            <div class="input-group"><label>Número:</label><input type="text" id="label-number"></div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="input-group"><label>Complemento:</label><input type="text" id="label-compl">
+                            </div>
+                            <div class="input-group"><label>Bairro:</label><input type="text" id="label-bairro"></div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 1rem;">
+                            <div class="input-group"><label>Cidade:</label><input type="text" id="label-city"></div>
+                            <div class="input-group">
+                                <label>UF:</label>
+                                <select id="label-uf">
+                                    <option value="SP">SP</option>
+                                    <option value="AC">AC</option>
+                                    <option value="AL">AL</option>
+                                    <option value="AP">AP</option>
+                                    <option value="AM">AM</option>
+                                    <option value="BA">BA</option>
+                                    <option value="CE">CE</option>
+                                    <option value="DF">DF</option>
+                                    <option value="ES">ES</option>
+                                    <option value="GO">GO</option>
+                                    <option value="MA">MA</option>
+                                    <option value="MT">MT</option>
+                                    <option value="MS">MS</option>
+                                    <option value="MG">MG</option>
+                                    <option value="PA">PA</option>
+                                    <option value="PB">PB</option>
+                                    <option value="PR">PR</option>
+                                    <option value="PE">PE</option>
+                                    <option value="PI">PI</option>
+                                    <option value="RJ">RJ</option>
+                                    <option value="RN">RN</option>
+                                    <option value="RS">RS</option>
+                                    <option value="RO">RO</option>
+                                    <option value="RR">RR</option>
+                                    <option value="SC">SC</option>
+                                    <option value="SE">SE</option>
+                                    <option value="TO">TO</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Observação (máx. 60 caracteres):</label>
+                            <textarea id="label-obs" maxlength="60" rows="2" style="resize:none;"></textarea>
+                            <div style="text-align:right; font-size:0.8rem; color:var(--text-dim);"><span
+                                    id="label-obs-count">60</span> caracteres restantes</div>
+                        </div>
+
+                        <div style="margin-top: 2rem; border-top: 1px solid #444; padding-top: 1rem;">
+                            <h4 style="color: var(--accent-orange); margin-bottom: 0.5rem;">Configuração da Impressão
+                            </h4>
+                            <div style="display: flex; gap: 1rem;">
+                                <div class="input-group"><label>Qtd / Folha</label><input type="number" id="print-qty"
+                                        value="1" placeholder="Max"></div>
+                                <div class="input-group"><label>Largura (mm)</label><input type="number"
+                                        id="print-width" value="80"></div>
+                                <div class="input-group"><label>Altura (mm)</label><input type="number"
+                                        id="print-height" value="40"></div>
+                            </div>
+                            <button id="label-print-btn" class="action-btn-full" style="margin-top: 1rem;">Gerar
+                                Etiquetas (A4)</button>
+                        </div>
+                    </section>
+
+                    <!-- Preview Section -->
+                    <section id="label-preview-container"
+                        style="background: #ccc; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+                        <h3 style="color: #333; margin-bottom: 1rem;">Visualização (Unidade)</h3>
+                        <div id="label-preview">
+                            <!-- JS renders preview here -->
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- ====== APP 7: NEWSLETTER ====== -->
+            <div id="app-newsletter" class="app-section hidden">
+                <main class="chat-container"
+                    style="height: 600px; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column;">
+                    <!-- Messages Feed -->
+                    <div id="messages-feed" class="messages-feed">
+                        <div class="empty-state-message" id="empty-state">
+                            <i class="fa-regular fa-comments"></i>
+                            <p>Nenhum aviso ainda. Escreva algo abaixo!</p>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Input Bar -->
+                    <footer class="chat-input-bar" style="position: relative; width: 100%;">
+                        <div class="input-wrapper">
+                            <label for="image-upload" class="icon-btn" title="Adicionar Imagem">
+                                <i class="fa-solid fa-camera"></i>
+                            </label>
+                            <input type="file" id="image-upload" accept="image/*" style="display: none;">
+
+                            <textarea id="message-input" placeholder="Escreva um aviso..." rows="1"></textarea>
+
+                            <button id="send-btn" class="send-btn">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <!-- Image Preview -->
+                        <div id="image-preview-container" class="image-preview-popup hidden">
+                            <div class="preview-wrapper">
+                                <img id="image-preview" src="" alt="Preview">
+                                <button id="clear-image" class="close-preview"><i
+                                        class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+                    </footer>
+                </main>
+            </div>
+
+            <!-- ====== APP 8: FAQ/CATALOG ====== -->
+            <div id="app-faq" class="app-section hidden">
+                <header class="header">
+                    <h1>Catálogo / FAQ</h1>
+                    <p>Busca detalhada</p>
+                </header>
+                <div class="input-group" style="max-width: 600px; margin: 0 auto; margin-bottom: 2rem;">
+                    <input type="text" id="faq-search" placeholder="Pesquisar produto..."
+                        style="border-radius: 20px; padding: 1rem;">
+                    <div id="faq-results" class="search-dropdown hidden"></div>
+                </div>
+                <div id="faq-detail-view" class="hidden"
+                    style="background: #2a2a2a; padding: 2rem; border-radius: 8px;">
+                    <!-- Details injected here -->
+                </div>
+                <div id="faq-catalog-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+                    <!-- Catalog items -->
+                </div>
+            </div>
+
+            <!-- ====== APP 8: TAX ====== -->
+            <div id="app-tax" class="app-section hidden">
+                <header class="header">
+                    <h1>Calculadora de Impostos</h1>
+                    <p>Conferência de Notas</p>
+                </header>
+                <section style="background: #2a2a2a; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="input-group"><label>Total Nota</label><input type="number" id="tax-note-val"></div>
+                        <div class="input-group"><label>Total Produtos</label><input type="number" id="tax-prod-val">
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem; color: var(--accent-orange);">
+                        Taxa Global: <span id="tax-global-rate">0.00</span>%
+                    </div>
+                </section>
+                <section>
+                    <button id="tax-add-item-btn" class="action-btn-full" style="width: auto;">+ Item</button>
+                    <div id="tax-list" style="margin-top: 1rem;"></div>
+                    <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #444; text-align: right;">
+                        <h3>Total Bruto: R$ <span id="tax-total-gross">0.00</span></h3>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ====== APP 9: DATABASE ====== -->
+            <div id="app-database" class="app-section hidden">
+                <header class="header">
+                    <h1>Banco de Dados</h1>
+                    <p>Acesso Restrito</p>
+                </header>
+                <div id="db-login-screen" style="text-align: center;">
+                    <input type="password" id="db-password" placeholder="Senha de acesso"
+                        style="padding: 0.8rem; border-radius: 4px; border: 1px solid #444; background: #222; color: white;">
+                    <button id="db-login-btn" class="action-btn-full"
+                        style="width: auto; margin-left: 10px;">Entrar</button>
+                </div>
+                <div id="db-content" class="hidden">
+                    <!-- DB Content -->
+                    <p>Conteúdo do banco carregado...</p>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Right Column: Recanto (Sticky) -->
+        <aside class="recanto-column">
+            <h2 class="column-title">Recanto</h2>
+            <div class="theme-toggle-container">
+                <button id="theme-toggle" class="theme-btn" aria-label="Alternar Tema">
+                    <i class="fa-solid fa-moon"></i>
+                    <i class="fa-solid fa-sun" style="display: none;"></i>
+                </button>
+                <div class="user-avatar-placeholder"></div>
+                <a href="https://www.lojadasresinas.com.br/" target="_blank" class="recanto-link"
+                    style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-dim); transition: 0.3s; margin-top: 1rem;">
+                    <div class="nav-icon-circle"
+                        style="margin: 0 0 5px 0; background: var(--accent-orange); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-shop"></i>
+                    </div>
+                    <span class="nav-text" style="font-size: 0.8rem;">Loja</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Footer Cell -->
+        <footer class="footer-cell">
+            <div class="footer-text">
+                Produzido por Caique Cesar Dos Santos e Antigravity
+            </div>
+            <div class="footer-contact">
+                <span><i class="fa-solid fa-envelope"></i> caique.cesar.eng@gmail.com</span>
+                <span><i class="fa-solid fa-envelope"></i> contato@lojadasresinas.com.br</span>
+                <span><i class="fa-solid fa-phone"></i> (11) 9 1574-9704 - Caique</span>
+                <span><i class="fa-solid fa-phone"></i> (11) 4111-2130 - Loja</span>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="landing-script.js"></script> <!-- Theme Toggle -->
+    <script src="products.js?v=7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="db-service.js"></script>
+    <script src="landing-apps.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,765 @@
+:root {
+    --bg-dark: #121212;
+    --card-bg-dark: #1e1e1e;
+    --primary-blue: #071f34;
+    --accent-orange: #ff8201;
+    --text-light: #ffffff;
+    --text-dim: #b0b0b0;
+
+    --neon-blue: 0 0 10px rgba(7, 31, 52, 0.8), 0 0 20px rgba(7, 31, 52, 0.5);
+    --neon-orange: 0 0 10px rgba(255, 130, 1, 0.8), 0 0 20px rgba(255, 130, 1, 0.5);
+
+    --font-main: 'Outfit', sans-serif;
+}
+
+.hidden {
+    display: none !important;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: #000;
+    /* Very dark background to pop the neon */
+    color: var(--text-light);
+    height: 100vh;
+    overflow-y: hidden;
+    /* Prevent body scroll, handle inside app-column */
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    /* Fixed sidebars, flexible center */
+    grid-template-rows: 1fr auto;
+    /* Main content takes space, footer takes auto */
+    height: 100vh;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Common Column Styles */
+.nav-column,
+.app-column,
+.recanto-column {
+    background-color: #2a2a2a;
+    /* Fallback */
+    border-radius: 4px;
+    /* Sharp-ish corners */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    /* Neon Glow Effect - "bem leve" */
+    box-shadow: 0 0 15px rgba(255, 130, 1, 0.1), 0 0 30px rgba(7, 31, 52, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Specific Column Colors/Glows based on image vibe */
+.nav-column {
+    /* Left side seems to have orange glow in image */
+    box-shadow: -5px 0 20px rgba(255, 130, 1, 0.15), inset 2px 0 20px rgba(255, 130, 1, 0.05);
+}
+
+.recanto-column {
+    /* Right side seems to have blue glow */
+    box-shadow: 5px 0 20px rgba(7, 31, 52, 0.5), inset -2px 0 20px rgba(7, 31, 52, 0.2);
+}
+
+.nav-column,
+.recanto-column {
+    /* Sticky behavior implied by "fixed" size requirement */
+    height: 100%;
+    overflow-y: auto;
+    /* Allow scroll within sidebar if content is too tall */
+}
+
+.app-column {
+    background-color: #333;
+    flex-grow: 1;
+    overflow-y: auto;
+    /* Only this one scrolls */
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+    /* Inner depth */
+}
+
+.column-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--text-light);
+}
+
+/* Navigation Menu */
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-dim);
+    transition: all 0.3s ease;
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    color: var(--text-light);
+    transform: translateX(5px);
+}
+
+/* Button Style: Circle + Text */
+.nav-icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #333;
+    /* Default dark circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-item:hover .nav-icon-circle {
+    background: var(--text-light);
+    color: var(--accent-orange);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Active State (Simulated) */
+.nav-item.active .nav-icon-circle {
+    background: var(--text-light);
+    color: var(--accent-orange);
+}
+
+.nav-item.active .nav-text {
+    background: var(--accent-orange);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px var(--accent-orange);
+}
+
+/* Text style for others */
+.nav-text {
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+
+/* Theme Toggle / Recanto Column */
+.theme-toggle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.theme-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #222, #333);
+    border: 1px solid #444;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.theme-btn:hover {
+    background: var(--accent-orange);
+    box-shadow: 0 0 15px var(--accent-orange);
+    border-color: var(--accent-orange);
+}
+
+/* Light Theme Variables (applied via JS class on body) */
+body.light-theme {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+body.light-theme .nav-column,
+body.light-theme .app-column,
+body.light-theme .recanto-column {
+    background-color: #e0e0e0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-color: #ccc;
+}
+
+body.light-theme .column-title {
+    color: #333;
+}
+
+body.light-theme .nav-text {
+    color: #555;
+}
+
+body.light-theme .nav-item:hover .nav-text {
+    color: #000;
+}
+
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .main-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+        /* enable body scroll on mobile */
+    }
+
+    body {
+        overflow-y: auto;
+    }
+
+    .nav-column,
+    .recanto-column {
+        /* On mobile, they can't be sticky sidebars in the same way, usually they turn into top/bottom bars or just stack. 
+            Request said "responda as diferentes resolucoes". Stacking is best for layout integrity. */
+        height: auto;
+        overflow-y: visible;
+    }
+
+    .nav-menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .nav-item {
+        flex-direction: column;
+        text-align: center;
+        width: 80px;
+    }
+
+    .nav-icon-circle {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+
+    .footer-cell {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+}
+
+/* Footer Styles */
+.footer-cell {
+    grid-column: 1 / -1;
+    /* Span all columns */
+    background-color: #2a2a2a;
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-dim);
+    box-shadow: 0 0 15px rgba(7, 31, 52, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-text {
+    font-size: 0.9rem;
+}
+
+.footer-contact {
+    font-size: 0.8rem;
+    display: flex;
+    gap: 15px;
+}
+
+.footer-contact i {
+    color: var(--accent-orange);
+    margin-right: 5px;
+}
+
+/* CSS for Input Fields matching user request */
+
+/* Default State */
+.input-group {
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #1e1e1e;
+    /* Dark gray background */
+    border: 1px solid #666;
+    /* Active/Default: Gray */
+    border-radius: 4px;
+    color: var(--text-light);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+    position: relative;
+}
+
+/* Label Styling */
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+/* Focus State: Orange */
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 0 1px var(--accent-orange);
+    /* Slight glow/double border feel */
+}
+
+/* Hover State: Animated White/Blue Gradient/Reflex */
+@keyframes border-reflex {
+    0% {
+        border-color: #ffffff;
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    }
+
+    50% {
+        border-color: #a0cfff;
+        box-shadow: 0 0 10px rgba(160, 207, 255, 0.3);
+    }
+
+    /* Light Blue */
+    100% {
+        border-color: #ffffff;
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    }
+}
+
+.input-group input:hover:not(:disabled):not(:focus),
+.input-group select:hover:not(:disabled):not(:focus),
+.input-group textarea:hover:not(:disabled):not(:focus) {
+    animation: border-reflex 2s infinite ease-in-out;
+}
+
+/* Error State */
+.input-error {
+    border-color: #ff4444 !important;
+    color: #ff4444 !important;
+}
+
+.input-group input:focus+label,
+.input-group select:focus+label {
+    color: var(--accent-orange) !important;
+}
+
+/* Disabled State */
+.input-group input:disabled,
+.input-group select:disabled,
+.input-group textarea:disabled {
+    background-color: #121212;
+    border-color: #333;
+    color: #555;
+    cursor: not-allowed;
+}
+
+/* Search Dropdown Styling */
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 4px;
+    z-index: 100;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    margin-top: 5px;
+}
+
+/* --- Label Generator Styles --- */
+.label-preview-content {
+    width: 100%;
+    max-width: 350px;
+    /* Standard label width approx */
+    background: white;
+    color: black;
+    padding: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    position: relative;
+}
+
+.label-header {
+    background: #00416B;
+    /* Correios Blue-ish */
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.label-group {
+    margin-bottom: 15px;
+}
+
+.label-label {
+    font-size: 0.7rem;
+    color: #555;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.label-value {
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+
+.label-value-large {
+    font-size: 1.3rem;
+}
+
+.label-barcode {
+    height: 40px;
+    background: repeating-linear-gradient(to right,
+            #000,
+            #000 2px,
+            #fff 2px,
+            #fff 4px);
+    margin: 10px 0;
+    width: 60%;
+}
+
+.label-footer {
+    border-top: 2px solid #000;
+    padding-top: 5px;
+    margin-top: 10px;
+    font-size: 0.8rem;
+}
+
+/* Scrollbar for dropdown */
+.search-dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.search-dropdown::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-orange);
+}
+
+.search-item:hover {
+    background-color: #333;
+}
+
+/* App Layout Standard: Divider */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    /* Left, Line, Right */
+    gap: 2rem;
+    align-items: start;
+    height: 100%;
+    /* Ensure full height for divider */
+}
+
+.vertical-divider {
+    width: 1px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+    /* Subtle glow */
+}
+
+/* Adjust responsiveness for grid */
+@media (max-width: 900px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+
+    .vertical-divider {
+        width: 100%;
+        height: 1px;
+        margin: 1rem 0;
+    }
+}
+
+/* 1. Button Hover Animation (Reflex on circle) */
+.nav-item:hover .nav-icon-circle,
+.recanto-link:hover .nav-icon-circle {
+    /* Reuse the border-reflex animation or similar */
+    animation: border-reflex 1.5s infinite linear;
+}
+
+/* 2. Tacos Green Number */
+.tacos-result-count {
+    color: #4cd137;
+    /* Light green */
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* 3. Weight Calc List Controls */
+.weight-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #222;
+    border-bottom: 1px solid #444;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.weight-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.weight-btn {
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.btn-plus {
+    background: #444;
+    color: white;
+}
+
+.btn-plus:hover {
+    background: var(--accent-orange);
+}
+
+.btn-minus {
+    background: #444;
+    color: white;
+}
+
+/* Remove arrows/spinners from number inputs */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.btn-minus:hover {
+    background: var(--accent-orange);
+}
+
+.btn-delete {
+    background: #ff4444;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #cc0000;
+}
+
+/* 4. Catalog Grid */
+.brand-section {
+    margin-bottom: 3rem;
+}
+
+.brand-title {
+    font-size: 1.5rem;
+    color: var(--accent-orange);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    /* Responsive, min 140px */
+    gap: 1.5rem;
+}
+
+/* Max 5 columns on larger screens - overridden by auto-fill constraints but we can force max-width if needed */
+@media (min-width: 1200px) {
+    .catalog-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.catalog-item {
+    background: #1e1e1e;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.catalog-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-orange);
+}
+
+.catalog-img-container {
+    width: 100%;
+    height: 140px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.catalog-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.catalog-name {
+    padding: 10px 5px 0 5px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+/* --- Tech Data Grid (Yield Calculator) --- */
+.tech-data-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.tech-item {
+    background: rgba(255, 255, 255, 0.05);
+    /* Slight lighter bg on dark */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.2s;
+}
+
+.tech-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    /* Interactive feedback */
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tech-item.full-width {
+    grid-column: 1 / -1;
+    /* Span all 3 columns */
+}
+
+.tech-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+.tech-value {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    font-weight: 500;
+    line-height: 1.3;
+    word-wrap: break-word;
+}
+
+/* Responsive Tech Grid */
+@media (max-width: 600px) {
+    .tech-data-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* --- Standardized Header Styles --- */
+.header {
+    text-align: left;
+    margin-bottom: 1.5rem;
+    /* Increased for better separation */
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header h1 {
+    font-size: 2rem;
+    color: var(--accent-orange);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    /* Clear space between title and subtitle */
+    line-height: 1.2;
+}
+
+.header p {
+    font-size: 1rem;
+    color: var(--text-dim);
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+/* --- Input Group Spacing --- */
+.input-group {
+    margin-bottom: 1rem !important;
+    /* Force 1rem spacing */
+}

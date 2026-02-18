@@ -1335,7 +1335,27 @@ input[type=number] {
 }
 
 @media (max-width: 600px) {
-    .brand-content {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .brand-content {}
+}
+
+/* --- Label & Carrier Generators Spacing --- */
+#app-labels .input-group,
+#app-carrier .input-group {
+    margin-bottom: 2rem;
+    /* Increased for better visual separation */
+    margin-top: 10px;
+    /* Space from item above */
+}
+
+#app-labels section,
+#app-carrier section {
+    padding-right: 15px;
+    /* Scrollbar margin */
+}
+
+#app-labels .input-group label,
+#app-carrier .input-group label {
+    margin-bottom: 8px;
+    /* Space between label and input */
+    display: block;
 }
