@@ -1,3 +1,4 @@
+console.log(">>> LANDING APPS JS LOADED <<<");
 
 // --- SHARED DATA & STATE ---
 let allProducts = []; // Shared product list
@@ -5,12 +6,13 @@ let currentApp = 'app-rendimento'; // Default app
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log(">>> DOM CONTENT LOADED FIRED <<<");
+
+    // 0. Setup Navigation IMMEDIATELY (Before external data)
+    setupNavigation();
 
     // 1. Load Products (Shared)
     await loadSharedProducts();
-
-    // 2. Setup Navigation
-    setupNavigation();
 
     // 3. Setup App Logics
     // 3. Setup App Logics
@@ -44,13 +46,16 @@ async function loadSharedProducts() {
 }
 
 // --- HELPER: Navigation & Animation ---
+// --- HELPER: Navigation & Animation ---
 function setupNavigation() {
     const navLinks = document.querySelectorAll('.nav-item');
+    console.log(`[Nav] Found ${navLinks.length} nav links.`);
 
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             // Identify target app from data-target
             const targetId = link.dataset.target;
+            console.log(`[Nav] Clicked link for: ${targetId}`);
 
             // If it's a valid app switch
             if (targetId) {
@@ -60,10 +65,12 @@ function setupNavigation() {
                     // Update active state
                     navLinks.forEach(n => n.classList.remove('active'));
                     link.classList.add('active');
+                    console.log(`[Nav] Switching from ${currentApp} to ${targetId}`);
                     switchApp(targetId);
+                } else {
+                    console.log(`[Nav] Already on ${targetId}, ignoring.`);
                 }
             }
-            // Else: Let it be a normal link (e.g. external shop)
         });
     });
 }
@@ -76,15 +83,15 @@ function switchApp(targetId) {
 
     // 1. Hide Old
     oldApp.classList.add('hidden');
-
-    // 2. Reset Old App Inputs (Generic reset)
     resetInputs(oldApp);
 
-    // 3. Show New App with Animation
+    // 2. Show New
     newApp.classList.remove('hidden');
-    newApp.style.animation = 'none';
-    newApp.offsetHeight; /* trigger reflow */
-    newApp.style.animation = 'appZoomIn 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+
+    // Animation removed to fix "disappearing app" bug
+    // newApp.style.animation = 'none';
+    // newApp.offsetHeight; 
+    // newApp.style.animation = 'appZoomIn ...';
 
     currentApp = targetId;
 }
@@ -92,8 +99,9 @@ function switchApp(targetId) {
 function showApp(id) {
     const app = document.getElementById(id);
     if (app) {
+        console.log("Showing app:", id); // distinct log
         app.classList.remove('hidden');
-        app.style.animation = 'appZoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+        // app.style.animation = 'appZoomIn ...'; // Removed
     }
 }
 
@@ -289,17 +297,47 @@ function setupTacosApp() {
     const areaInput = document.getElementById('tacos-area');
     const resultsList = document.getElementById('tacos-results-list');
 
+    // Button Logic
+    const btnSub10 = document.getElementById('btn-tacos-sub-10');
+    const btnSub1 = document.getElementById('btn-tacos-sub-1');
+    const btnAdd1 = document.getElementById('btn-tacos-add-1');
+    const btnAdd10 = document.getElementById('btn-tacos-add-10');
+
+    const updateValue = (delta) => {
+        let val = parseFloat(areaInput.value) || 0;
+        val += delta;
+        if (val < 0) val = 0;
+        areaInput.value = val;
+        // Trigger manual input event to update results
+        areaInput.dispatchEvent(new Event('input'));
+    };
+
+    if (btnSub10) btnSub10.addEventListener('click', () => updateValue(-10));
+    if (btnSub1) btnSub1.addEventListener('click', () => updateValue(-1));
+    if (btnAdd1) btnAdd1.addEventListener('click', () => updateValue(1));
+    if (btnAdd10) btnAdd10.addEventListener('click', () => updateValue(10));
+
+    // Data - Assuming standard sizes if calculation is needed here or from products?
+    // The previous code had `tacosSizes`. Let's assume it was hardcoded or we define it.
+    // Based on previous snippet it was `tacosSizes`.
     const tacosSizes = [
-        { name: '7x35', area: 0.0245 },
-        { name: '7x42', area: 0.0294 },
-        { name: '10x30', area: 0.0300 },
-        { name: '10x40', area: 0.0400 },
-    ]; // Example data
+        { name: '7x35 cm', area: 0.0245 },
+        { name: '7x42 cm', area: 0.0294 },
+        { name: '10x40 cm', area: 0.0400 },
+        { name: '10x30 cm', area: 0.0300 }
+    ];
 
     if (areaInput) {
-        areaInput.addEventListener('input', () => {
+        // Enforce numeric input only (since we switched to type="text")
+        areaInput.addEventListener('input', (e) => {
+            const val = e.target.value.replace(/[^0-9.]/g, ''); // Allow decimal for area
+            if (val !== e.target.value) {
+                e.target.value = val;
+            }
+
+            // Trigger calculation
             const area = parseFloat(areaInput.value);
-            if (!area) {
+            if (!area || area <= 0) {
                 resultsList.innerHTML = '<p style="color: var(--text-dim);">Informe a área...</p>';
                 return;
             }
@@ -311,11 +349,13 @@ function setupTacosApp() {
                 div.style.marginBottom = '10px';
                 div.style.borderBottom = '1px dashed #444';
                 div.style.paddingBottom = '5px';
-                // Added class 'tacos-result-count' for green color
                 div.innerHTML = `<span style="color:var(--accent-orange); font-weight:bold;">${size.name}</span>: <span class="tacos-result-count">${qtd}</span> peças`;
                 resultsList.appendChild(div);
             });
         });
+
+        // Initialize empty state
+        resultsList.innerHTML = '<p style="color: var(--text-dim);">Informe a área...</p>';
     }
 }
 
@@ -366,27 +406,27 @@ function setupCaixasApp() {
         list.innerHTML = '';
         boxItems.forEach((item, index) => {
             const li = document.createElement('li');
-            li.className = 'weight-item'; // Reuse styling from peso app (flex, dark bg, etc)
-            // If weight-item class is not generic enough in CSS, we might need to add styles. 
-            // Assuming 'weight-item' and 'weight-controls' are available globally or we added them.
-            // If not, we use inline styles matching the look.
+            li.className = 'weight-item'; // Reuse base container style
 
+            // New "Tacos System" for List Items (Buttons + Input)
             li.innerHTML = `
                 <div>
                      <div style="font-weight:bold; color: var(--text-light);">${item.h}x${item.w}x${item.l} cm</div>
                      <div style="font-size:0.8rem; color: var(--text-dim);">${item.vol.toFixed(4)} m³ | ${item.weight}g</div>
                 </div>
-                <div class="weight-controls">
-                    <button class="weight-btn btn-minus" data-idx="${index}">-</button>
-                    <span style="min-width:20px; text-align:center;">${item.qty}</span>
-                    <button class="weight-btn btn-plus" data-idx="${index}">+</button>
-                    <button class="weight-btn btn-delete" data-idx="${index}"><i class="fa-solid fa-trash"></i></button>
+
+                <div class="premium-counter-wrapper small">
+                    <button class="counter-btn btn-red btn-minus" data-idx="${index}">-</button>
+                    <input type="text" class="counter-input" value="${item.qty}" readonly style="width: 50px;">
+                    <button class="counter-btn btn-green btn-plus" data-idx="${index}">+</button>
                 </div>
+
+                <button class="counter-btn btn-delete" data-idx="${index}" style="width:40px; height:40px; background: rgba(255,50,50,0.2); color:#ff6b6b;"><i class="fa-solid fa-trash"></i></button>
             `;
             list.appendChild(li);
         });
 
-        // Add Listeners
+        // Add Listeners (Shared Logic)
         list.querySelectorAll('.btn-plus').forEach(btn => {
             btn.addEventListener('click', () => {
                 const idx = parseInt(btn.dataset.idx);
@@ -425,9 +465,9 @@ function setupPesoApp() {
     const list = document.getElementById('peso-list');
 
     let tempInfo = null;
-    let totalW = 0;
-    let count = 0;
+    let listItems = [];
 
+    // ... Search Logic Same as Before ...
     function handleSearch(query) {
         let matches = [];
         if (query.length === 0) {
@@ -455,8 +495,6 @@ function setupPesoApp() {
         search.addEventListener('blur', () => { setTimeout(() => results.classList.add('hidden'), 200); });
     }
 
-    let listItems = []; // Array of objects: { product, qty }
-
     function updatePesoTotals() {
         let totalW = 0;
         let count = 0;
@@ -472,23 +510,31 @@ function setupPesoApp() {
         list.innerHTML = '';
         listItems.forEach((item, index) => {
             const li = document.createElement('li');
-            li.className = 'weight-item';
+            li.className = 'peso-card-item';
+
+            // Image Placeholder (Using generic generic image or product prop if available)
+            // Assuming no image URL in product, using a placeholder icon or random color
+            const imgUrl = 'https://via.placeholder.com/50/333/fff?text=' + item.product.name.substring(0, 2).toUpperCase();
+
             li.innerHTML = `
-                <div>
-                    <div style="font-weight:bold;">${item.product.name}</div>
-                    <div style="font-size:0.8rem; color:#aaa;">${item.product.weight} kg/unid</div>
+                <img src="${imgUrl}" class="peso-product-img" alt="Prod">
+                <div class="peso-info">
+                    <h4>${item.product.name}</h4>
+                    <p>${item.product.weight} kg/unid</p>
                 </div>
-                <div class="weight-controls">
-                    <button class="weight-btn btn-minus" data-idx="${index}">-</button>
-                    <span style="min-width:20px; text-align:center;">${item.qty}</span>
-                    <button class="weight-btn btn-plus" data-idx="${index}">+</button>
-                    <button class="weight-btn btn-delete" data-idx="${index}"><i class="fa-solid fa-trash"></i></button>
+
+                <div class="premium-counter-wrapper small">
+                    <button class="counter-btn btn-red btn-minus" data-idx="${index}">-</button>
+                    <span style="min-width: 40px; text-align: center; font-weight: bold; font-size: 1.2rem;">${item.qty}</span>
+                    <button class="counter-btn btn-green btn-plus" data-idx="${index}">+</button>
                 </div>
-             `;
+
+                <button class="counter-btn btn-delete" data-idx="${index}" style="width:40px; height:40px; background: rgba(255,50,50,0.2); color:#ff6b6b;"><i class="fa-solid fa-trash"></i></button>
+            `;
             list.appendChild(li);
         });
 
-        // Add Listeners
+        // Add Listeners (Same Logic)
         list.querySelectorAll('.btn-plus').forEach(btn => {
             btn.addEventListener('click', () => {
                 const idx = parseInt(btn.dataset.idx);

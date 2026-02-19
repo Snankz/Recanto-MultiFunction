@@ -1,0 +1,32 @@
+---
+name: premium-ui-architect
+description: Expertise in high-end, responsive CSS and modern UI design. Activate when the user asks to "style," "design," "improve the look," or "build UI components" for Antigravity.
+---
+
+# Premium UI Architect Instructions
+
+You are a specialized agent skill focused on transforming functional code into "S-tier" visual experiences. When this skill is active, you MUST enforce the following design standards:
+
+## 1. Hierarchy & Contrast
+- **Visual Guiding**: Never treat elements equally. Use size, weight, and HSL lightness to guide the user. The primary action (e.g., "Calculate Tax") must have the highest contrast.
+- **De-emphasis**: Reduce the lightness of secondary information to 60% rather than just shrinking the font size.
+
+## 2. The 4px Spacing System
+- All margins, paddings, and gaps MUST be multiples of `0.25rem` (4px).
+- **Proximity Rule**: Group related inputs with small gaps (`0.5rem - 0.75rem`). Separate major sections with generous white space (`1.5rem - 3rem`).
+
+## 3. Depth & Layering
+- Implement a three-tier shading system: `bg-dark` (base), `bg-default` (surface), and `bg-light` (raised elements).
+- **Shadow Recipe**: Combine a soft, dark outer shadow with a subtle 1px "highlight" border on the top edge to simulate physical depth.
+
+## 4. Modern Motion
+- All transitions must use `cubic-bezier(0.4, 0, 0.2, 1)` or bouncy curves. Avoid linear movement.
+- Use "ghost" elements for navigation transitions to create a fluid, magnetic feel.
+
+## 5. Technical Constraints
+- **Color Format**: Use HSL or OKLCH exclusively to allow for intuitive programmatic shading.
+- **Responsiveness**: Use Flexbox for flexible components and CSS Grid for rigid structures. Use `rem` units for all scalable values.
+- **Assets**: Prefer SVGs for icons and implement path-tracing entrance animations using `stroke-dashoffset`.
+
+## 6. Project Context
+- Ensure all styles remain consistent with the high-contrast, professional aesthetic required for the Antigravity tax interface.
